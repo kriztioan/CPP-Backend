@@ -9,7 +9,7 @@ CCOPT     = -std=c++17 -O3 -Wall -fpermissive -Wall -DHAVE_FREETYPE -DON_SETI
 SRC       = src/
 INC       = include/
 OBJ       = obj/
-BIN       = ./
+BIN       = bin/
 
 TESTS     = gtests
 TESTSDIR  = tests
