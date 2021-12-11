@@ -1,21 +1,32 @@
-![Workflow Status](https://github.com/pahdb/NAPISD/actions/workflows/ci.yml/badge.svg) [![Coverage Status]( https://codecov.io/gh/PAHdb/NAPISD/graph/badge.svg)](https://codecov.io/gh/PAHdb/NAPISD) [![Documentation](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://pahdb.github.io/AmesPAHdbPythonSuite/)
+![Workflow Status](https://github.com/pahdb/CPP-Backend/actions/workflows/ci.yml/badge.svg) [![Coverage Status]( https://codecov.io/gh/PAHdb/NAPISD/graph/badge.svg)](https://codecov.io/gh/PAHdb/NAPISD) [![Documentation](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://pahdb.github.io/AmesPAHdbPythonSuite/)
 
-# NAPISD
+# CPP-Backend
 
-C++-backend for the tools at the PAHdb website.
+C++-backend for the online tools at the PAHdb website.
 
 ## Requirements
 
 This software requires:
 
 ``Make``
+``Cmake``
+``Doxygen``
 ``C++``
 ``MySQL++``
 ``PLPlot``
+``Googletest``
+``TinyXML2``
+``CFITSIO``
+``CCFITS``
+``PLPlot``
+``MySQLClient``
+``MySQL++=2.3.2``
+``GSL``
+``Tclap``
 
 ## Installation
 
-`NAPISD` can be build using make:
+The C++-backend can be build using make:
 
 ``make -f Makefile.server``
 
