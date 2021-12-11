@@ -1,15 +1,15 @@
 CC        =  g++
-#CCFLAGS   = -I./include/ -I/usr/include/mysql -I../../../local/include/mysql++/ -I../include/tinyxml2 -I../include/ -I../include/cfitsio
+#CCFLAGS  = -I./include/ -I/usr/include/mysql -I../../../local/include/mysql++/ -I../include/tinyxml2 -I../include/ -I../include/cfitsio
 CCFLAGS   = -I./include -I/usr/include/mysql
-#CCLIB     = -nodefaultlibs -Wl,-rpath -Wl,../../../lib/shared -L../../../lib/shared -lmysqlpp -lmysqlclient -lplplotcxxd -lgsl -lcfitsio -lCCfits -ltinyxml2 -lgslcblas -lstdc++ -lc
-#CCLIB     = -L./lib -L../../../local/lib/ -lmysqlpp -lmysqlclient -lplplotcxxd -lgsl -lcfitsio -lCCfits -ltinyxml2 -lgslcblas
-CCLIB     =  -L/usr/lib -L/usr/local/lib -lmysqlpp -lmysqlclient -lgsl -lcfitsio -lCCfits -ltinyxml2 -lgslcblas -lplplotcxxd
+#CCLIB    = -nodefaultlibs -Wl,-rpath -Wl,../../../lib/shared -L../../../lib/shared -lmysqlpp -lmysqlclient -lplplotcxxd -lgsl -lcfitsio -lCCfits -ltinyxml2 -lgslcblas -lstdc++ -lc
+#CCLIB    = -L./lib -L../../../local/lib/ -lmysqlpp -lmysqlclient -lplplotcxxd -lgsl -lcfitsio -lCCfits -ltinyxml2 -lgslcblas
+CCLIB     =   -L/usr/lib -L/usr/local/lib -lmysqlpp -lmysqlclient -lgsl -lcfitsio -lCCfits -ltinyxml2 -lgslcblas -lplplotcxx
 CCOPT     = -std=c++17 -O3 -Wall -fpermissive -Wall -DHAVE_FREETYPE -DON_SETI
 
 SRC       = src/
 INC       = include/
 OBJ       = obj/
-BIN       = bin/
+BIN       = ./
 
 TESTS     = gtests
 TESTSDIR  = tests
