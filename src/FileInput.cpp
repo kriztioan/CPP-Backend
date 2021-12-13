@@ -61,7 +61,7 @@ FileInput::readASCIIFileFromDisk() {
 
   try {
 
-    ifstr.open(_filename.c_str(), std::ios::in);
+    ifstr.open(_filename, std::ios::in);
 
     while (ifstr.get(c).good()) {
 
@@ -147,7 +147,7 @@ FileInput::readYAAARFileFromDisk() {
 
   try {
 
-    fits = std::make_unique<CCfits::FITS>(_filename.c_str(), CCfits::Read);
+    fits = std::make_unique<CCfits::FITS>(_filename, CCfits::Read);
 
     CCfits::ExtHDU &table = fits->extension(1);
 
@@ -190,11 +190,7 @@ FileInput::readVOTableFileFromDisk() {
 
   if (doc.LoadFile(_filename.c_str()) != tinyxml2::XML_SUCCESS) {
 
-#ifdef ON_SETI
-    throw Exception(doc.GetErrorStr1());
-#else
     throw Exception(doc.ErrorStr());
-#endif
   }
 
   tinyxml2::XMLElement *root = doc.RootElement();
@@ -293,10 +289,10 @@ FileInput::readGuessedFileFromDisk() {
 
   try {
 
-    fits = std::make_unique<CCfits::FITS>(_filename.c_str());
+    fits = std::make_unique<CCfits::FITS>(_filename);
   } catch (CCfits::FitsError &e) {
 
-    std::ifstream ifstr(_filename.c_str());
+    std::ifstream ifstr(_filename);
 
     std::string line;
 
