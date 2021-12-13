@@ -4,8 +4,8 @@
 #include "Exception.h"
 #include "PAHGeometry.h"
 
-#include <mysql++/custom.h>
 #include <mysql++/mysql++.h>
+#include <mysql++/ssqls.h>
 
 sql_create_16(sql_properties, 1, 0, int, uid, int, hydrogen, int, carbon, int,
               nitrogen, int, oxygen, int, magnesium, int, silicate, int, iron,
@@ -28,8 +28,6 @@ public:
                std::string_view username, const std::string_view password,
                int port, bool compress, int timeout,
                const std::string_view socket);
-
-  void close();
 
   void setTable(Database table);
 
@@ -69,8 +67,6 @@ private:
 
   Database _table;
 };
-
-inline void PAHdb::close() { _connection.close(); }
 
 inline void PAHdb::setTable(Database table) { _table = table; }
 

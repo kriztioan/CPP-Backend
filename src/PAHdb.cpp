@@ -8,9 +8,8 @@ void PAHdb::connect(std::string_view database = "", std::string_view host = "",
 
   try {
 
-    _connection.connect(database.data(), host.data(), username.data(),
-                        password.data(), port, compress, timeout,
-                        socket.data());
+    _connection.connect(database.data(), socket.data(), username.data(),
+                        password.data(), port);
   } catch (const mysqlpp::ConnectionFailed &e) {
 
     throw(Exception(e.what()));
@@ -25,7 +24,7 @@ PAHdb::getTransitionsFromUIDsAndVersion(const std::vector<int> &uids,
 
   mysqlpp::Query query = _connection.query();
 
-  mysqlpp::Result result;
+  mysqlpp::StoreQueryResult result;
 
   mysqlpp::Row row;
 
@@ -87,7 +86,7 @@ PAHdb::getTransitionsFromVersion(int version, std::vector<int> &uids) {
 
   mysqlpp::Query query = _connection.query();
 
-  mysqlpp::Result result;
+  mysqlpp::StoreQueryResult result;
 
   mysqlpp::Row row;
 
@@ -131,7 +130,7 @@ PAHdb::getTransitionsFromIds(const std::vector<int> &ids) {
 
   mysqlpp::Query query = _connection.query();
 
-  mysqlpp::Result result;
+  mysqlpp::StoreQueryResult result;
 
   mysqlpp::Row row;
 
@@ -184,7 +183,7 @@ PAHdb::getExperimentalAndTheoreticalTransitionsFromId(int id) {
 
   mysqlpp::Query query = _connection.query();
 
-  mysqlpp::Result result;
+  mysqlpp::StoreQueryResult result;
 
   mysqlpp::Row row;
 
@@ -228,7 +227,7 @@ PAHdb::getExperimentalAndTheoreticalTransitionsFromId(int id) {
 
     try {
 
-      for (const auto row : result) {
+      for (const auto &row : result) {
 
         transition.first = row["frequency"];
 
@@ -305,7 +304,7 @@ PAHdb::getGeometriesFromIds(const std::vector<int> &ids) {
 
   mysqlpp::Query query = _connection.query();
 
-  mysqlpp::Result result;
+  mysqlpp::StoreQueryResult result;
 
   mysqlpp::Row row;
 
@@ -365,7 +364,7 @@ PAHdb::getFormulaeFromIds(const std::vector<int> &ids) {
 
   mysqlpp::Query query = _connection.query();
 
-  mysqlpp::Result result;
+  mysqlpp::StoreQueryResult result;
 
   mysqlpp::Row row;
 
@@ -509,7 +508,7 @@ void PAHdb::setProgress(double progress) {
 
   mysqlpp::Query query = _connection.query();
 
-  mysqlpp::Result result;
+  mysqlpp::StoreQueryResult result;
 
   try {
 
@@ -527,7 +526,7 @@ void PAHdb::setError(const char *error) {
 
   mysqlpp::Query query = _connection.query();
 
-  mysqlpp::Result result;
+  mysqlpp::StoreQueryResult result;
 
   try {
 

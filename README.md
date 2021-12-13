@@ -20,7 +20,7 @@ This software requires:
 ``CCFITS``
 ``PLPlot``
 ``MySQLClient``
-``MySQL++=2.3.2``
+``MySQL``
 ``GSL``
 ``Tclap``
 

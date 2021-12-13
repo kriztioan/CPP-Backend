@@ -12,7 +12,7 @@ jobs:
           cd /usr/src/gtest
           sudo cmake CMakeLists.txt
           sudo make
-          test ! -h /usr/local/lib/libtest.a sudo && ln -s libgtest.a /usr/local/lib/libtest.a
+          test ! -h /usr/local/lib/libtest.a && sudo ln -s libgtest.a /usr/local/lib/libtest.a
           test ! -h /usr/local/lib/libgtest_main.a && sudo ln -s libgtest_main.a /usr/local/lib/libgtest_main.a
           cd -
       - uses: actions/checkout@v2
@@ -24,7 +24,7 @@ jobs:
            make -f Makefile.server clean
            mkdir -p obj
            mkdir -p bin
-           #make -f Makefile.server
+           make -j -f Makefile.server
       - name: Unit tests
         run: |
           make -f Makefile.server tests
