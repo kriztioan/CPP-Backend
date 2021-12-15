@@ -139,7 +139,7 @@ void Canvas::paintOnJPEG(std::string_view filename) {
   _plstream->spage(0.0, 0.0, _size.at(0), _size.at(1), 0.0, 0.0);
 
   _defaultcharacterheight *= 1.5;
-  
+
   paint();
 }
 
