@@ -1,10 +1,7 @@
 CC        =  g++
-#CCFLAGS  = -I./include/ -I/usr/include/mysql -I../../../local/include/mysql++/ -I../include/tinyxml2 -I../include/ -I../include/cfitsio
 CCFLAGS   = -I./include -I/usr/include/mysql
-#CCLIB    = -nodefaultlibs -Wl,-rpath -Wl,../../../lib/shared -L../../../lib/shared -lmysqlpp -lmysqlclient -lplplotcxxd -lgsl -lcfitsio -lCCfits -ltinyxml2 -lgslcblas -lstdc++ -lc
-#CCLIB    = -L./lib -L../../../local/lib/ -lmysqlpp -lmysqlclient -lplplotcxxd -lgsl -lcfitsio -lCCfits -ltinyxml2 -lgslcblas
 CCLIB     =   -L/usr/lib -L/usr/local/lib -lmysqlpp -lmysqlclient -lgsl -lcfitsio -lCCfits -ltinyxml2 -lgslcblas -lplplotcxx
-CCOPT     = -std=c++17 -O3 -Wall -fpermissive -Wall
+CCOPT     = -std=c++17 -Wall -fpermissive -Wall
 
 SRC       = src/
 INC       = include/
@@ -13,7 +10,13 @@ BIN       = bin/
 
 TESTS     = gtests
 TESTSDIR  = tests
-TESTSLIBS = -lgtest -lgtest_main -lpthread
+TESTSLIBS = -lgtest -lgtest_main -lpthread -lgcov
+TESTOPT   =
+ifeq (${MAKECMDGOALS}, tests)
+TESTSOPT  = -fprofile-arcs -ftest-coverage
+endif
+
+GCOV      = gcov -r -o ${OBJ}
 
 EXEC      = napisd
 
@@ -47,7 +50,7 @@ ${OBJ}PAHGeometry.o :${SRC}PAHGeometry.cpp ${INC}PAHGeometry.h ${OBJ}Atom.o
 	${CC} ${CCFLAGS} ${CCOPT} -o $@ -c ${SRC}PAHGeometry.cpp
 
 ${OBJ}PAHEmissionModel.o : ${SRC}PAHEmissionModel.cpp ${INC}PAHEmissionModel.h ${INC}Exception.h
-	${CC} ${CCFLAGS} ${CCOPT} -o $@ -c ${SRC}PAHEmissionModel.cpp
+	${CC} ${CCFLAGS} ${CCOPT} ${TESTSOPT} -o $@ -c ${SRC}PAHEmissionModel.cpp
 
 ${OBJ}SpectralFitter.o : ${SRC}SpectralFitter.cpp ${INC}SpectralFitter.h ${INC}Exception.h ${OBJ}NNLS.o
 	${CC} ${CCFLAGS} ${CCOPT} -o $@ -c ${SRC}SpectralFitter.cpp
@@ -86,8 +89,9 @@ ${OBJ}Atom.o : ${SRC}Atom.cpp ${INC}Atom.h
 	${CC} ${CCFLAGS} ${CCOPT} -o $@ -c ${SRC}Atom.cpp
 
 tests: ${OBJ}PAHEmissionModel.o ${TESTSDIR}/gtests.cpp
-	${CC} ${CCFLAGS} ${CCOPT} ${OBJ}PAHEmissionModel.o ${TESTSDIR}/gtests.cpp -o ${BIN}${TESTS} ${CCLIB} ${TESTSLIBS}
+	${CC} ${CCFLAGS} ${CCOPT} ${OBJ}PAHEmissionModel.o ${TESTSDIR}/gtests.cpp -o ${BIN}${TESTS} ${CCLIB} ${TESTSLIBS} ${TESTSOPT}
 	${BIN}${TESTS}
+	${GCOV} PAHEmissionModel.cpp
 
 clean :
-	/bin/rm -f ${OBJ}*.o ${BIN}${EXEC} ${BIN}${TESTS}
+	/bin/rm -f ${OBJ}*.o ${BIN}${EXEC} ${BIN}${TESTS} ${OBJ}*.gc?? *gcov

@@ -10,7 +10,11 @@ BIN       = ../local/bin/
 
 TESTS     = gtests
 TESTSDIR  = tests
-TESTSLIBS = -lgtest -lgtest_main
+TESTSLIBS = -lgtest -lgtest_main -lpthread -lgcov
+TESTOPT   =
+ifeq (${MAKECMDGOALS}, tests)
+TESTSOPT  = -fprofile-arcs -ftest-coverage
+endif
 
 EXEC      = napisd
 
@@ -44,7 +48,7 @@ ${OBJ}PAHGeometry.o :${SRC}PAHGeometry.cpp ${INC}PAHGeometry.h ${OBJ}Atom.o
 	${CC} ${CCFLAGS} ${CCOPT} -o $@ -c ${SRC}PAHGeometry.cpp
 
 ${OBJ}PAHEmissionModel.o : ${SRC}PAHEmissionModel.cpp ${INC}PAHEmissionModel.h ${INC}Exception.h
-	${CC} ${CCFLAGS} ${CCOPT} -o $@ -c ${SRC}PAHEmissionModel.cpp
+	${CC} ${CCFLAGS} ${CCOPT} ${TESTSOPT} -o $@ -c ${SRC}PAHEmissionModel.cpp
 
 ${OBJ}SpectralFitter.o : ${SRC}SpectralFitter.cpp ${INC}SpectralFitter.h ${INC}Exception.h ${OBJ}NNLS.o
 	${CC} ${CCFLAGS} ${CCOPT} -o $@ -c ${SRC}SpectralFitter.cpp
@@ -83,8 +87,8 @@ ${OBJ}Atom.o : ${SRC}Atom.cpp ${INC}Atom.h
 	${CC} ${CCFLAGS} ${CCOPT} -o $@ -c ${SRC}Atom.cpp
 
 tests: ${OBJ}PAHEmissionModel.o ${TESTSDIR}/gtests.cpp
-	${CC} ${CCFLAGS} ${CCOPT} ${OBJ}PAHEmissionModel.o ${TESTSDIR}/gtests.cpp -o ${BIN}${TESTS} ${CCLIB} ${TESTSLIBS}
+	${CC} ${CCFLAGS} ${CCOPT} ${TESTSOPT} ${OBJ}PAHEmissionModel.o ${TESTSDIR}/gtests.cpp -o ${BIN}${TESTS} ${CCLIB} ${TESTSLIBS}
 	${BIN}${TESTS}
 
 clean :
-	/bin/rm -f ${OBJ}*.o ${BIN}${EXEC} ${BIN}${TESTS}
+	/bin/rm -f ${OBJ}*.o ${BIN}${EXEC} ${BIN}${TESTS} ${OBJ}*.gc?? *gcov

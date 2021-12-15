@@ -26,10 +26,18 @@ jobs:
            mkdir -p obj
            mkdir -p bin
            make -j -f Makefile.server
-      - name: Unit tests
+      - name: Unit tests and coverage
         run: |
+          make -f Makefile.server clean
           make -f Makefile.server tests
+          bash <(curl -s https://codecov.io/bash) -X gcov
       - name: Build documentation
         run: |
           cd docs
           doxygen
+      - name: Publish documentation
+        if: ${{ github.event_name == 'push' }}
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/html
