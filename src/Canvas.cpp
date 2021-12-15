@@ -87,11 +87,8 @@ void Canvas::paintOnScreen() {
 void Canvas::paintOnPostscript(std::string_view filename) {
 
   _plstream = std::make_unique<plstream>();
-#ifdef ON_SETI
-  _plstream->sdev("epsqt");
-#else
+
   _plstream->sdev("epscairo");
-#endif
 
   std::string f(filename);
 
@@ -105,14 +102,6 @@ void Canvas::paintOnPostscript(std::string_view filename) {
 
   _plstream->setopt("aspect", "1");
 
-  _defaultcharacterheight *= 0.5;
-
-#ifdef HAVE_FREETYPE
-  _plstream->setopt("drvopt", "lines_antialiasing=1");
-
-  _plstream->setopt("drvopt", "text_vectorize=1");
-#endif
-
   paint();
 }
 
@@ -120,11 +109,7 @@ void Canvas::paintOnPNG(std::string_view filename) {
 
   _plstream = std::make_unique<plstream>();
 
-#ifdef ON_SETI
-  _plstream->sdev("pngqt");
-#else
   _plstream->sdev("pngcairo");
-#endif
 
   std::string f(filename);
 
@@ -134,13 +119,7 @@ void Canvas::paintOnPNG(std::string_view filename) {
 
   _plstream->spage(0.0, 0.0, _size.at(0), _size.at(1), 0.0, 0.0);
 
-#ifdef HAVE_FREETYPE
-  _plstream->setopt("drvopt", "lines_antialiasing=1");
-
-  _plstream->setopt("drvopt", "text_vectorize=1");
-
   _defaultcharacterheight *= 1.5;
-#endif
 
   paint();
 }
@@ -159,12 +138,8 @@ void Canvas::paintOnJPEG(std::string_view filename) {
 
   _plstream->spage(0.0, 0.0, _size.at(0), _size.at(1), 0.0, 0.0);
 
-#ifdef HAVE_FREETYPE
-  _plstream->setopt("drvopt", "text");
-
-  _defaultcharacterheight *= 1.5;
-#endif
-
+  defaultcharacterheight *= 1.5;
+  
   paint();
 }
 

@@ -4,7 +4,7 @@ CCFLAGS   = -I./include -I/usr/include/mysql
 #CCLIB    = -nodefaultlibs -Wl,-rpath -Wl,../../../lib/shared -L../../../lib/shared -lmysqlpp -lmysqlclient -lplplotcxxd -lgsl -lcfitsio -lCCfits -ltinyxml2 -lgslcblas -lstdc++ -lc
 #CCLIB    = -L./lib -L../../../local/lib/ -lmysqlpp -lmysqlclient -lplplotcxxd -lgsl -lcfitsio -lCCfits -ltinyxml2 -lgslcblas
 CCLIB     =   -L/usr/lib -L/usr/local/lib -lmysqlpp -lmysqlclient -lgsl -lcfitsio -lCCfits -ltinyxml2 -lgslcblas -lplplotcxx
-CCOPT     = -std=c++17 -O3 -Wall -fpermissive -Wall -DHAVE_FREETYPE -DON_SETI
+CCOPT     = -std=c++17 -O3 -Wall -fpermissive -Wall
 
 SRC       = src/
 INC       = include/
