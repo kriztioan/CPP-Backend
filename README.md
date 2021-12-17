@@ -1,4 +1,4 @@
-![Workflow Status](https://github.com/pahdb/CPP-Backend/actions/workflows/ci.yml/badge.svg) [![Coverage Status]( https://codecov.io/gh/PAHdb/NAPISD/graph/badge.svg)](https://codecov.io/gh/PAHdb/NAPISD) [![Documentation](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://pahdb.github.io/AmesPAHdbPythonSuite/)
+![Workflow Status](https://github.com/pahdb/CPP-Backend/actions/workflows/ci.yml/badge.svg) [![Coverage Status]( https://codecov.io/gh/PAHdb/CPP-Backend/graph/badge.svg)](https://codecov.io/gh/PAHdb/CPP-Backend) [![Documentation](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://pahdb.github.io/AmesPAHdbPythonSuite/)
 
 # CPP-Backend
 
