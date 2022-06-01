@@ -371,7 +371,29 @@ void Canvas::drawPlot(Plot *plot) {
 
         _plstream->col0(lookUpColor(curve->getFillColor()));
 
-        _plstream->fill(curve->getX().size(), x.get(), y.get());
+        if (y.get()[0] == 0.0f && y.get()[curve->getY().size() - 1] == 0.0f) {
+
+          _plstream->fill(curve->getX().size(), x.get(), y.get());
+        } else {
+
+          std::unique_ptr<PLFLT[]> a =
+              std::make_unique<PLFLT[]>(curve->getX().size() + 2);
+
+          std::unique_ptr<PLFLT[]> b =
+              std::make_unique<PLFLT[]>(curve->getY().size() + 2);
+
+          std::copy(curve->getX().begin(), curve->getX().end(), a.get() + 1);
+
+          std::copy(curve->getY().begin(), curve->getY().end(), b.get() + 1);
+
+          a.get()[0] = x.get()[0];
+
+          a.get()[curve->getX().size() + 1] = x.get()[curve->getX().size() - 1];
+
+          b.get()[0] = b.get()[curve->getY().size() + 1] = 0.0f;
+
+          _plstream->fill(curve->getX().size() + 2, a.get(), b.get());
+        }
       }
 
       _plstream->col0(lookUpColor(curve->getColor()));
