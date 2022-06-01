@@ -44,6 +44,11 @@ void PAHEmissionModel::makeGrid(double fmin, double fmax, double step) {
 
     fmin += step;
   }
+
+  if (_grid.back() != fmax) {
+
+    _grid.push_back(fmax);
+  }
 }
 
 void PAHEmissionModel::setTransitions(
