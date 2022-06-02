@@ -117,6 +117,8 @@ void PAHEmissionModel::getSpectraAndConvolveWithGaussianOfFHWM(
 
   vector.clear();
 
+  vector.reserve(_transitions.size());
+
   double sigma = fwhm / 2.0 / sqrt(2.0 * log(2.0));
 
   for (auto &transition : _transitions) {
@@ -146,6 +148,8 @@ void PAHEmissionModel::getSpectraAndConvolveWithDrudeOfFHWM(
     std::vector<std::vector<double>> &vector, double fwhm) {
 
   vector.clear();
+
+  vector.reserve(_transitions.size());
 
   for (auto &transition : _transitions) {
 
@@ -201,6 +205,8 @@ void PAHEmissionModel::applyTemperatureWithEnergy(
 
   temperatures.clear();
 
+  temperatures.reserve(_transitions.size());
+
   for (auto &transition : _transitions) {
 
     temperatures.push_back(solveInitialTemperature(energy, transition));
@@ -213,6 +219,8 @@ void PAHEmissionModel::applyCascadeWithEnergy(
     double energy, std::vector<double> &temperatures) {
 
   temperatures.clear();
+
+  temperatures.reserve(_transitions.size());
 
   double TemperatureMax;
 
@@ -264,6 +272,8 @@ double PAHEmissionModel::featureStrength(double temperature,
 
   std::vector<std::pair<double, double>> *transitions =
       static_cast<std::vector<std::pair<double, double>> *>(transitions_p);
+
+  sum.reserve(transitions->size());
 
   double val;
 

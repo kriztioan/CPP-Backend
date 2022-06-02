@@ -27,3 +27,10 @@ TEST(NAPISDTest, EmissionModelPyrene) {
   model.applyCascadeWithEnergy(8.0 * 1.602e-12, temperatures);
   EXPECT_EQ(round(temperatures.at(0)), 2724.0);
 }
+
+TEST(NAPISDTest, EmissionModelGrid) {
+  
+  PAHEmissionModel model;
+  model.makeGrid(1.1, 11.233, 2.0);
+  EXPECT_EQ(model.getGrid().back(), 11.233);
+}

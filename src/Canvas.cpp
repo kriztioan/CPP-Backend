@@ -357,42 +357,40 @@ void Canvas::drawPlot(Plot *plot) {
         continue;
       }
 
-      std::unique_ptr<PLFLT[]> x =
-          std::make_unique<PLFLT[]>(curve->getX().size());
+      const PLFLT *x = curve->getX().data();
 
-      std::unique_ptr<PLFLT[]> y =
-          std::make_unique<PLFLT[]>(curve->getY().size());
+      const PLFLT *y = curve->getY().data();
 
-      std::copy(curve->getX().begin(), curve->getX().end(), x.get());
-
-      std::copy(curve->getY().begin(), curve->getY().end(), y.get());
+      size_t n = curve->getX().size();
 
       if (curve->isFill() && curve->getSymbol() == 0) {
 
         _plstream->col0(lookUpColor(curve->getFillColor()));
 
-        if (y.get()[0] == 0.0f && y.get()[curve->getY().size() - 1] == 0.0f) {
+        if (y[0] == 0.0f && y[n - 1] == 0.0f) {
 
-          _plstream->fill(curve->getX().size(), x.get(), y.get());
+          _plstream->fill(n, x, y);
         } else {
 
-          std::unique_ptr<PLFLT[]> a =
-              std::make_unique<PLFLT[]>(curve->getX().size() + 2);
+          std::vector<PLFLT> a(curve->getX().begin(), curve->getX().end());
 
-          std::unique_ptr<PLFLT[]> b =
-              std::make_unique<PLFLT[]>(curve->getY().size() + 2);
+          std::vector<PLFLT> b(curve->getY().begin(), curve->getY().end());
 
-          std::copy(curve->getX().begin(), curve->getX().end(), a.get() + 1);
+          if (y[0] != 0.0f) {
 
-          std::copy(curve->getY().begin(), curve->getY().end(), b.get() + 1);
+            a.insert(a.begin(), x[0]);
 
-          a.get()[0] = x.get()[0];
+            b.insert(b.begin(), 0.0f);
+          }
 
-          a.get()[curve->getX().size() + 1] = x.get()[curve->getX().size() - 1];
+          if (y[n - 1] != 0.0f) {
 
-          b.get()[0] = b.get()[curve->getY().size() + 1] = 0.0f;
+            a.push_back(x[n - 1]);
 
-          _plstream->fill(curve->getX().size() + 2, a.get(), b.get());
+            b.push_back(0.0f);
+          }
+
+          _plstream->fill(a.size(), a.data(), b.data());
         }
       }
 
@@ -404,13 +402,12 @@ void Canvas::drawPlot(Plot *plot) {
 
         _plstream->width(curve->getLineWidth());
 
-        _plstream->line(curve->getX().size(), x.get(), y.get());
+        _plstream->line(n, x, y);
       } else {
 
         _plstream->ssym(_defaultcharacterheight, curve->getSymbolSize());
 
-        _plstream->poin(curve->getX().size(), x.get(), y.get(),
-                        curve->getSymbol());
+        _plstream->poin(n, x, y, curve->getSymbol());
       }
     } break;
     case Wrapper::Type::W_Text: {
