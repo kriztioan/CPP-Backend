@@ -1,5 +1,5 @@
-#include "gtest/gtest.h"
 #include "PAHEmissionModel.h"
+#include "gtest/gtest.h"
 
 #include <vector>
 
@@ -29,7 +29,7 @@ TEST(NAPISDTest, EmissionModelPyrene) {
 }
 
 TEST(NAPISDTest, EmissionModelGrid) {
-  
+
   PAHEmissionModel model;
   model.makeGrid(1.1, 11.233, 2.0);
   EXPECT_EQ(model.getGrid().back(), 11.233);

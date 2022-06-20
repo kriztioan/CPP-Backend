@@ -1,7 +1,7 @@
 CC        =  g++
 CCFLAGS   = -I./include -I/usr/include/mysql
 CCLIB     =   -L/usr/lib -L/usr/local/lib -lmysqlpp -lmysqlclient -lgsl -lcfitsio -lCCfits -ltinyxml2 -lgslcblas -lplplotcxx
-CCOPT     = -std=c++17 -Wall -fpermissive -Wall
+CCOPT     = -std=c++17 -Wall -fpermissive -Wall -flto
 
 SRC       = src/
 INC       = include/
