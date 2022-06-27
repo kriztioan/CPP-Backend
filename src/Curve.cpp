@@ -6,7 +6,7 @@ Curve::Curve()
   _y.reserve(8);
 }
 
-void Curve::setXAndY(const double &x, const double &y) {
+void Curve::setXAndY(const double x, const double y) {
 
   _x.clear();
 
@@ -15,4 +15,18 @@ void Curve::setXAndY(const double &x, const double &y) {
   _y.clear();
 
   _y.push_back(y);
+}
+
+void Curve::setXErr(const double xerr) {
+
+  _xerr.clear();
+
+  _xerr.push_back(xerr);
+}
+
+void Curve::setYErr(const double yerr) {
+
+  _yerr.clear();
+
+  _yerr.push_back(yerr);
 }

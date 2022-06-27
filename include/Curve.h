@@ -18,11 +18,25 @@ public:
 
   void setXAndY(const std::vector<double> &x, const std::vector<double> &y);
 
-  void setXAndY(const double &x, const double &y);
+  void setXAndY(const double x, const double y);
+
+  void setXErr(const double xerr);
+
+  void setXErr(const std::vector<double> &xerr);
+
+  void setYErr(const double yerr);
+
+  void setYErr(const std::vector<double> &yerr);
 
   std::vector<double> const &getX() const;
 
+  std::vector<double> const &getXErr() const;
+
   std::vector<double> const &getY() const;
+
+  std::vector<double> const &getYErr() const;
+
+  void clear();
 
   void setFillColor(std::string_view color);
 
@@ -43,7 +57,11 @@ public:
 private:
   std::vector<double> _x;
 
+  std::vector<double> _xerr;
+
   std::vector<double> _y;
+
+  std::vector<double> _yerr;
 
   std::string_view _fillcolor;
 
@@ -60,9 +78,28 @@ inline void Curve::setXAndY(const std::vector<double> &x,
   _y = y;
 }
 
+inline void Curve::setXErr(const std::vector<double> &xerr) { _xerr = xerr; }
+
+inline void Curve::setYErr(const std::vector<double> &yerr) { _yerr = yerr; }
+
 inline std::vector<double> const &Curve::getX() const { return (_x); }
 
+inline std::vector<double> const &Curve::getXErr() const { return (_xerr); }
+
 inline std::vector<double> const &Curve::getY() const { return (_y); }
+
+inline std::vector<double> const &Curve::getYErr() const { return (_yerr); }
+
+inline void Curve::clear() {
+
+  _x.clear();
+
+  _xerr.clear();
+
+  _y.clear();
+
+  _yerr.clear();
+}
 
 inline void Curve::setFill(bool on = true) { _fill = on; }
 

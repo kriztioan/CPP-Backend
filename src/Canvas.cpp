@@ -359,9 +359,51 @@ void Canvas::drawPlot(Plot *plot) {
 
       const PLFLT *x = curve->getX().data();
 
+      const PLFLT *xerr = curve->getXErr().data();
+
       const PLFLT *y = curve->getY().data();
 
+      const PLFLT *yerr = curve->getYErr().data();
+
       size_t n = curve->getX().size();
+
+      if (xerr || yerr) {
+
+        _plstream->lsty(static_cast<PLINT>(curve->getLineStyle()));
+
+        _plstream->width(curve->getLineWidth());
+
+        _plstream->col0(lookUpColor(curve->getColor()));
+
+        std::vector<PLFLT> min(n);
+
+        std::vector<PLFLT> max(n);
+
+        if (xerr) {
+
+          std::transform(curve->getX().begin(), curve->getX().end(),
+                         curve->getXErr().begin(), min.begin(),
+                         std::minus<PLFLT>());
+
+          std::transform(curve->getX().begin(), curve->getX().end(),
+                         curve->getXErr().begin(), max.begin(),
+                         std::plus<PLFLT>());
+
+          _plstream->errx(n, x, min.data(), max.data());
+        }
+        if (yerr) {
+
+          std::transform(curve->getY().begin(), curve->getY().end(),
+                         curve->getYErr().begin(), min.begin(),
+                         std::minus<PLFLT>());
+
+          std::transform(curve->getY().begin(), curve->getY().end(),
+                         curve->getYErr().begin(), max.begin(),
+                         std::plus<PLFLT>());
+
+          _plstream->erry(n, x, min.data(), max.data());
+        }
+      }
 
       if (curve->isFill() && curve->getSymbol() == 0) {
 
@@ -467,65 +509,99 @@ void Canvas::drawPlot(Plot *plot) {
 
   _plstream->smin(_defaultticklength, plot->getMinorTickLength());
 
-  _plstream->sxax(plot->getXAxis().getMaxDigits(),
-                  plot->getXAxis().getPrecision());
+  for (auto &ax : plot->getXAxis()) {
 
-  _plstream->syax(plot->getYAxis().getMaxDigits(),
-                  plot->getYAxis().getPrecision());
+    _plstream->sxax(ax.getMaxDigits(), ax.getPrecision());
 
-  if (plot->getXAxis().getAxisOptString().find('n') != std::string::npos &&
-      plot->getXAxis().getStyle() == Axis::Style::WritePowerInFrame) {
+    if (ax.getAxisOptString().find('n') != std::string::npos &&
+        ax.getStyle() == Axis::Style::WritePowerInFrame) {
 
-    float order;
+      float order;
 
-    order = floor(log10(xmax));
+      order = floor(log10(xmax));
 
-    if (std::abs(order) > 1.0) {
+      if (std::abs(order) > 1.0) {
 
-      std::ostringstream ostr;
+        std::ostringstream ostr;
 
-      ostr << "(x10#u" << order << "#d)";
+        ostr << "(x10#u" << order << "#d)";
 
-      _plstream->ptex(0.9 * (xmax - xmin) + xmin, 0.05 * (ymax - ymin) + ymin,
-                      xmax, 0.0, 0.0, ostr.str().c_str());
+        _plstream->ptex(0.9 * (xmax - xmin) + xmin, 0.05 * (ymax - ymin) + ymin,
+                        xmax, 0.0, 0.0, ostr.str().c_str());
 
-      xmin /= pow(10, order);
+        xmin /= pow(10, order);
 
-      xmax /= pow(10, order);
+        xmax /= pow(10, order);
+      }
+    }
+
+    if (ax.getStyle() != Axis::Style::Default) {
+
+      _plstream->wind(xmin, xmax, ymin, ymax);
+    }
+
+    _plstream->slabelfunc(ax.getLabelFormatter(), nullptr);
+
+    _plstream->axes(0.0, 0.0, ax.getAxisOptString().data(), 0, 0, "", 0, 0);
+
+    if (ax.getAxisOptString().find('m') != std::string::npos) {
+
+      _plstream->mtex("t", 3.5, 0.5, 0.5, ax.getTitle().data());
+    } else {
+
+      _plstream->mtex("b", 3.5, 0.5, 0.5, ax.getTitle().data());
     }
   }
 
-  if (plot->getYAxis().getAxisOptString().find('n') != std::string::npos &&
-      plot->getYAxis().getStyle() == Axis::Style::WritePowerInFrame) {
+  for (auto &ax : plot->getYAxis()) {
 
-    float order;
+    _plstream->syax(ax.getMaxDigits(), ax.getPrecision());
 
-    order = floor(log10(ymax));
+    if (ax.getAxisOptString().find('n') != std::string::npos &&
+        ax.getStyle() == Axis::Style::WritePowerInFrame) {
 
-    if (std::abs(order) > 1.0) {
+      float order;
 
-      std::ostringstream ostr;
+      order = floor(log10(ymax));
 
-      ostr << "(x10#u" << order << "#d)";
+      if (std::abs(order) > 1.0) {
 
-      _plstream->ptex(0.05 * (xmax - xmin) + xmin, 0.9 * (ymax - ymin) + ymin,
-                      (xmax - xmin), 0.0, 0.0, ostr.str().c_str());
+        std::ostringstream ostr;
 
-      ymin /= pow(10, order);
+        ostr << "(x10#u" << order << "#d)";
 
-      ymax /= pow(10, order);
+        _plstream->ptex(0.05 * (xmax - xmin) + xmin, 0.9 * (ymax - ymin) + ymin,
+                        (xmax - xmin), 0.0, 0.0, ostr.str().c_str());
+
+        ymin /= pow(10, order);
+
+        ymax /= pow(10, order);
+      }
+    }
+
+    if (ax.getStyle() != Axis::Style::Default) {
+
+      _plstream->wind(xmin, xmax, ymin, ymax);
+    }
+
+    _plstream->slabelfunc(ax.getLabelFormatter(), nullptr);
+
+    _plstream->axes(0.0, 0.0, "", 0, 0, ax.getAxisOptString().data(), 0, 0);
+
+    if (ax.getAxisOptString().find('m') != std::string::npos) {
+
+      _plstream->mtex("r", 3.5, 0.5, 0.5, ax.getTitle().data());
+    } else {
+
+      _plstream->mtex("l", 3.5, 0.5, 0.5, ax.getTitle().data());
     }
   }
 
-  if (plot->getXAxis().getStyle() != Axis::Style::Default ||
-      plot->getYAxis().getStyle() != Axis::Style::Default) {
+  /*_plstream->box(plot->getXAxis().front().getAxisOptString().data(), 0, 0,
+                 plot->getYAxis().front().getAxisOptString().data(), 0, 0);
 
-    _plstream->wind(xmin, xmax, ymin, ymax);
-  }
-
-  _plstream->box(plot->getXAxis().getAxisOptString().data(), 0, 0,
-                 plot->getYAxis().getAxisOptString().data(), 0, 0);
-
-  _plstream->lab(plot->getXAxis().getTitle().data(),
-                 plot->getYAxis().getTitle().data(), plot->getTitle().data());
+  _plstream->lab(plot->getXAxis().front().getTitle().data(),
+                 plot->getYAxis().front().getTitle().data(),
+  plot->getTitle().data());
+  */
 }

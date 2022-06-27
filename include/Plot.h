@@ -100,11 +100,11 @@ public:
 
   bool isAdvance() const;
 
-  Axis &getXAxis();
+  std::vector<Axis> &getXAxis();
 
-  Axis &getYAxis();
+  std::vector<Axis> &getYAxis();
 
-  Axis &getZAxis();
+  std::vector<Axis> &getZAxis();
 
   void setFontSize(double size);
 
@@ -139,11 +139,11 @@ private:
 
   LineProperties _verticalgrid;
 
-  Axis _xaxis;
+  std::vector<Axis> _xaxis;
 
-  Axis _yaxis;
+  std::vector<Axis> _yaxis;
 
-  Axis _zaxis;
+  std::vector<Axis> _zaxis;
 
   double _fontsize;
 
@@ -279,10 +279,10 @@ inline const double &Plot::getMinorTickLength() const {
   return (_minorticklength);
 }
 
-inline Axis &Plot::getXAxis() { return (_xaxis); }
+inline std::vector<Axis> &Plot::getXAxis() { return (_xaxis); }
 
-inline Axis &Plot::getYAxis() { return (_yaxis); }
+inline std::vector<Axis> &Plot::getYAxis() { return (_yaxis); }
 
-inline Axis &Plot::getZAxis() { return (_zaxis); }
+inline std::vector<Axis> &Plot::getZAxis() { return (_zaxis); }
 
 #endif /* _PLOT_H_ */

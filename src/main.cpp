@@ -360,11 +360,13 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
   plot.getVerticalGrid() = plot.getHorizontalGrid();
 
-  plot.getYAxis().setWriteLabelsParalell();
+  plot.getYAxis().at(0).setWriteLabelsParalell();
 
-  plot.getYAxis().setStyle(Axis::Style::WritePowerInFrame);
+  plot.getYAxis().at(0).setStyle(Axis::Style::WritePowerInFrame);
 
   std::string xtitle;
+
+  std::string xtitle2;
 
   std::string ytitle;
 
@@ -373,6 +375,8 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
   case Parameters::Arg::Wavelength:
 
     xtitle = "#fiwavelength [micron]";
+
+    xtitle2 = "#fifrequency [cm#u-1#d]";
 
     if (parameters.getTool() != Parameters::Arg::CompareExperimentWithTheory) {
 
@@ -387,6 +391,8 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
   default:
 
     xtitle = "#fifrequency [cm#u-1#d]";
+
+    xtitle2 = "#fiwavelength [micron]";
   }
 
   if (parameters.getTool() == Parameters::Arg::CompareExperimentWithTheory) {
@@ -468,7 +474,9 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     panels.setLayout(1, spectra.size());
 
-    plot.getXAxis().setTitle(xtitle);
+    plot.getXAxis().at(0).setTitle(xtitle);
+
+    // plot.getXAxis().at(1).setTitle(xtitle2);
 
     formulae = pahdb.getFormulaeFromIds(parameters.getIds());
 
@@ -487,11 +495,11 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
       plot.setDrawVerticalFineGrid();
 
-      plot.getYAxis().setDrawConventionalAxis(false);
+      plot.getYAxis().at(0).setDrawConventionalAxis(false);
 
-      plot.getYAxis().setDrawUnconventionalAxis(false);
+      plot.getYAxis().at(0).setDrawUnconventionalAxis(false);
 
-      plot.getYAxis().setDrawConventionalLabels(false);
+      plot.getYAxis().at(0).setDrawConventionalLabels(false);
 
       plot.setYLimits(
           MinMax::min_max(spectrum, MinMax::Nice | MinMax::MaxExtraRoom));
@@ -504,9 +512,9 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
       plot.setDrawVerticalFineGrid(false);
 
-      plot.getXAxis().setDrawConventionalLabels(false);
+      plot.getXAxis().at(0).setDrawConventionalLabels(false);
 
-      plot.getXAxis().setTitle("");
+      plot.getXAxis().at(0).setTitle("");
 
       // Draw panel structure
 
@@ -618,11 +626,11 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
         plot.clear();
       }
 
-      plot.getYAxis().setDrawConventionalAxis();
+      plot.getYAxis().at(0).setDrawConventionalAxis();
 
-      plot.getYAxis().setDrawUnconventionalAxis();
+      plot.getYAxis().at(0).setDrawUnconventionalAxis();
 
-      plot.getYAxis().setDrawConventionalLabels();
+      plot.getYAxis().at(0).setDrawConventionalLabels();
 
       // Draw panel spectrum
 
@@ -636,6 +644,22 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
       plot.clear();
     }
+
+    plots.back().getXAxis().emplace_back();
+
+    plots.back().getXAxis().at(1).setReciprocalLabelFormatter();
+
+    plots.back().getXAxis().at(0).setDrawUnconventionalAxis(false);
+
+    plots.back().getXAxis().at(1).setDrawConventionalAxis(false);
+
+    plots.back().getXAxis().at(1).setDrawConventionalLabels(false);
+
+    plots.back().getXAxis().at(1).setDrawUnconventionalAxis();
+
+    plots.back().getXAxis().at(1).setDrawUnconventionalLabels();
+
+    plots.back().getXAxis().at(1).setTitle(xtitle2);
 
     panels.addPlots(plots);
 
@@ -679,17 +703,17 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     plot.setAdvance(false);
 
-    plot.getXAxis().setDrawConventionalAxis(false);
+    plot.getXAxis().at(0).setDrawConventionalAxis(false);
 
-    plot.getXAxis().setDrawUnconventionalAxis(false);
+    plot.getXAxis().at(0).setDrawUnconventionalAxis(false);
 
-    plot.getXAxis().setDrawConventionalLabels(false);
+    plot.getXAxis().at(0).setDrawConventionalLabels(false);
 
-    plot.getYAxis().setDrawConventionalAxis(false);
+    plot.getYAxis().at(0).setDrawConventionalAxis(false);
 
-    plot.getYAxis().setDrawUnconventionalAxis(false);
+    plot.getYAxis().at(0).setDrawUnconventionalAxis(false);
 
-    plot.getYAxis().setDrawConventionalLabels(false);
+    plot.getYAxis().at(0).setDrawConventionalLabels(false);
 
     plot.setYLimits(
         MinMax::min_max(transitions, MinMax::Nice | MinMax::MaxExtraRoom));
@@ -807,17 +831,17 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     plot.clear();
 
-    plot.getXAxis().setTitle(xtitle);
+    plot.getXAxis().at(0).setTitle(xtitle);
 
-    plot.getXAxis().setDrawConventionalAxis();
+    plot.getXAxis().at(0).setDrawConventionalAxis();
 
-    plot.getXAxis().setDrawConventionalLabels();
+    plot.getXAxis().at(0).setDrawConventionalLabels();
 
-    plot.getYAxis().setDrawConventionalAxis();
+    plot.getYAxis().at(0).setDrawConventionalAxis();
 
-    plot.getYAxis().setDrawUnconventionalAxis();
+    plot.getYAxis().at(0).setDrawUnconventionalAxis();
 
-    plot.getYAxis().setDrawConventionalLabels();
+    plot.getYAxis().at(0).setDrawConventionalLabels();
 
     newmargins[0] = margins[0];
 
@@ -848,13 +872,27 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     plot.setYMargins(newmargins);
 
-    plot.getXAxis().setTitle("");
+    plot.getXAxis().emplace_back();
 
-    plot.getXAxis().setDrawZeroLine();
+    plot.getXAxis().at(1).setReciprocalLabelFormatter();
 
-    plot.getXAxis().setDrawConventionalLabels(false);
+    plot.getXAxis().at(0).setDrawUnconventionalAxis(false);
 
-    plot.getXAxis().setDrawUnconventionalAxis();
+    plot.getXAxis().at(1).setDrawConventionalAxis(false);
+
+    plot.getXAxis().at(1).setDrawConventionalLabels(false);
+
+    plot.getXAxis().at(1).setDrawUnconventionalAxis();
+
+    plot.getXAxis().at(1).setDrawUnconventionalLabels();
+
+    plot.getXAxis().at(1).setTitle(xtitle2);
+
+    plot.getXAxis().at(0).setTitle("");
+
+    plot.getXAxis().at(0).setDrawZeroLine();
+
+    plot.getXAxis().at(0).setDrawConventionalLabels(false);
 
     for (const auto &transition : transitions.at(1)) {
 
@@ -887,19 +925,26 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
     break;
   case Parameters::Arg::SpectralFit:
 
-    curve.setFill(false);
-
     curve.setSymbol(9);
 
     curve.setXAndY(grid, std::get<1>(inputdata));
 
+    if (std::get<2>(inputdata).size() == std::get<1>(inputdata).size()) {
+
+      curve.setYErr(std::get<2>(inputdata));
+    }
+
     plot.addCurve(curve);
+
+    curve.clear();
 
     curve.setSymbol(0);
 
+    curve.setFill(false);
+
     curve.setColor("dedede");
 
-    sum = std::vector<double>(spectra.front().size());
+    sum = std::vector<double>(spectra.at(0).size());
 
     for (auto &spectrum : spectra) {
 
@@ -1018,9 +1063,25 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     plot.addCurve(curve);
 
-    plot.getXAxis().setTitle(xtitle);
+    plot.getXAxis().at(0).setTitle(xtitle);
 
-    plot.getYAxis().setTitle(ytitle);
+    plot.getXAxis().emplace_back();
+
+    plot.getXAxis().at(1).setReciprocalLabelFormatter();
+
+    plot.getXAxis().at(0).setDrawUnconventionalAxis(false);
+
+    plot.getXAxis().at(1).setDrawConventionalAxis(false);
+
+    plot.getXAxis().at(1).setDrawConventionalLabels(false);
+
+    plot.getXAxis().at(1).setDrawUnconventionalAxis();
+
+    plot.getXAxis().at(1).setDrawUnconventionalLabels();
+
+    plot.getXAxis().at(1).setTitle(xtitle2);
+
+    plot.getYAxis().at(0).setTitle(ytitle);
 
     plots.push_back(plot);
 
@@ -1040,7 +1101,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     text.setText(ostr.str());
 
-    text.setCoordinates(0.15, 0.93, 0.0);
+    text.setCoordinates(0.25, 0.8, 0.0);
 
     canvas.addText(text);
 
@@ -1048,7 +1109,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
   case Parameters::Arg::CoAdd:
   default:
 
-    sum = std::vector<double>(spectra.front().size());
+    sum = std::vector<double>(spectra.at(0).size());
 
     for (const auto &spectrum : spectra) {
 
@@ -1068,9 +1129,25 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     plot.setYLimits(MinMax::min_max(sum, MinMax::Nice));
 
-    plot.getXAxis().setTitle(xtitle);
+    plot.getXAxis().at(0).setTitle(xtitle);
 
-    plot.getYAxis().setTitle(ytitle);
+    plot.getXAxis().emplace_back();
+
+    plot.getXAxis().at(1).setReciprocalLabelFormatter();
+
+    plot.getXAxis().at(0).setDrawUnconventionalAxis(false);
+
+    plot.getXAxis().at(1).setDrawConventionalAxis(false);
+
+    plot.getXAxis().at(1).setDrawConventionalLabels(false);
+
+    plot.getXAxis().at(1).setDrawUnconventionalAxis();
+
+    plot.getXAxis().at(1).setDrawUnconventionalLabels();
+
+    plot.getXAxis().at(1).setTitle(xtitle2);
+
+    plot.getYAxis().at(0).setTitle(ytitle);
 
     plots.push_back(plot);
 
@@ -1112,7 +1189,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     header.insert(header.end(), {uids.str(), "First row: weights"});
 
-    spectra.front().insert(spectra.front().begin(), 0);
+    spectra.at(0).insert(spectra.at(0).begin(), 0);
 
     for (size_t i = 1; i < spectra.size(); i++) {
 

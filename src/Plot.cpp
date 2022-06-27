@@ -2,12 +2,16 @@
 
 Plot::Plot()
     : _xlimits({2.0, 0.0}), _ylimits({2.0, 0.0}), _zlimits({2.0, 0.0}),
-      _xmargins({0.15, 0.9}), _ymargins({0.15, 0.9}), _zmargins({0.15, 0.9}),
+      _xmargins({0.15, 0.9}), _ymargins({0.15, 0.85}), _zmargins({0.15, 0.9}),
       _title(""), _fontsize(1.0), _majorticklength(1.0),
       _minorticklength(2.0 / 3.0), _drawhorizontalgrid(false),
       _drawverticalgrid(false), _drawhorizontalfinegrid(false),
       _drawverticalfinegrid(false), _advance(true) {
+
   _wrappers.reserve(4);
+  _xaxis.emplace_back();
+  _yaxis.emplace_back();
+  _zaxis.emplace_back();
 }
 
 void Plot::addPoint(Point &point) {

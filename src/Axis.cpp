@@ -1,8 +1,8 @@
 #include "Axis.h"
 
 Axis::Axis()
-    : _title(""), _axisoptstr("bcnst"), _precision(1), _maxdigits(6),
-      _style(Axis::Style::Default) {}
+    : _title(""), _axisoptstr("bcnst"), _precision(1),
+      _maxdigits(6), _style(Axis::Style::Default), _callback(NULL) {}
 
 void Axis::_set(char option, bool on = true) {
 
@@ -17,4 +17,10 @@ void Axis::_set(char option, bool on = true) {
 
     _axisoptstr.erase(i, 1);
   }
+}
+
+void Axis::_reciprocal(PLINT axis, PLFLT value, PLCHAR_NC_VECTOR label,
+                       PLINT length, PLPointer data) {
+
+  snprintf(label, length, "%g", 1e4 / value);
 }

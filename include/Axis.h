@@ -4,6 +4,8 @@
 #include <string>
 #include <string_view>
 
+#include <plplot/plstream.h>
+
 class Axis {
 
 public:
@@ -53,6 +55,10 @@ public:
 
   const Style &getStyle() const;
 
+  void setReciprocalLabelFormatter();
+
+  PLLABEL_FUNC_callback getLabelFormatter();
+
 private:
   std::string _title;
 
@@ -64,7 +70,12 @@ private:
 
   Style _style;
 
+  PLLABEL_FUNC_callback _callback;
+
   void _set(char option, bool on);
+
+  static void _reciprocal(PLINT axis, PLFLT value, PLCHAR_NC_VECTOR label,
+                   PLINT length, PLPointer data);
 };
 
 inline std::string_view Axis::getAxisOptString() const { return (_axisoptstr); }
@@ -108,5 +119,14 @@ inline const int &Axis::getMaxDigits() const { return (_maxdigits); }
 inline void Axis::setStyle(Axis::Style style) { _style = style; }
 
 inline const Axis::Style &Axis::getStyle() const { return (_style); }
+
+inline void Axis::setReciprocalLabelFormatter() {
+  _set('o', true);
+  _callback = Axis::_reciprocal;
+}
+
+inline PLLABEL_FUNC_callback Axis::getLabelFormatter() {
+  return _callback;
+}
 
 #endif /* _AXIS_H_ */
