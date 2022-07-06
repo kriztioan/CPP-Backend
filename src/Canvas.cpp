@@ -468,25 +468,16 @@ void Canvas::drawPlot(Plot *plot) {
 
         _plstream->ptex(text->getCoordinates().at(0),
                         text->getCoordinates().at(1),
-                        (plot->getXLimits().at(1) - plot->getXLimits().at(0)) *
-                            cosf(M_PI * text->getAngle() / 180.0),
-                        (plot->getYLimits().at(1) - plot->getYLimits().at(0)) *
-                            sinf(M_PI * text->getAngle() / 180.0),
+                        (xmax - xmin) * cosf(M_PI * text->getAngle() / 180.0),
+                        (ymax - ymin) * sinf(M_PI * text->getAngle() / 180.0),
                         text->getJustification(), text->getText().data());
       } else if (text->getSystem() == Text::CoordinateSystem::NORMAL) {
 
-        _plstream->ptex(
-            plot->getXLimits().at(0) +
-                (plot->getXLimits().at(1) - plot->getXLimits().at(0)) *
-                    text->getCoordinates().at(0),
-            plot->getYLimits().at(0) +
-                (plot->getYLimits().at(1) - plot->getYLimits().at(0)) *
-                    text->getCoordinates().at(1),
-            (plot->getXLimits().at(1) - plot->getXLimits().at(0)) *
-                cosf(M_PI * text->getAngle() / 180.0),
-            (plot->getYLimits().at(1) - plot->getYLimits().at(0)) *
-                sinf(M_PI * text->getAngle() / 180.0),
-            text->getJustification(), text->getText().data());
+        _plstream->ptex(xmin + (xmax - xmin) * text->getCoordinates().at(0),
+                        ymin + (ymax - ymin) * text->getCoordinates().at(1),
+                        (xmax - xmin) * cosf(M_PI * text->getAngle() / 180.0),
+                        (ymax - ymin) * sinf(M_PI * text->getAngle() / 180.0),
+                        text->getJustification(), text->getText().data());
       }
     } break;
     case Wrapper::Type::W_Panels:
@@ -540,9 +531,70 @@ void Canvas::drawPlot(Plot *plot) {
       _plstream->wind(xmin, xmax, ymin, ymax);
     }
 
-    _plstream->slabelfunc(ax.getLabelFormatter(), nullptr);
+    if (ax.getTickFinder()) {
 
-    _plstream->axes(0.0, 0.0, ax.getAxisOptString().data(), 0, 0, "", 0, 0);
+      std::string axisoptstr(ax.getAxisOptString());
+
+      const std::string opts("mnst");
+
+      std::string::size_type i;
+      for (const char opt : opts) {
+
+        if ((i = axisoptstr.find(opt)) != std::string::npos) {
+
+          axisoptstr.erase(i, 1);
+        }
+      }
+
+      _plstream->axes(0.0, 0.0, axisoptstr.data(), 0, 0, "", 0, 0);
+
+      PLFLT p_xmin, p_xmax, p_ymin, p_ymax;
+
+      _plstream->gspa(p_xmin, p_xmax, p_ymin, p_ymax);
+
+      PLFLT dx = abs(xmax - xmin);
+
+      double dy = (axisoptstr.find('i') == std::string::npos ? -1.0 : 1.0) *
+                  (ymax - ymin) * _defaultticklength *
+                  plot->getMajorTickLength() /
+                  ((plot->getYMargins().at(1) - plot->getYMargins().at(0)) *
+                   (p_ymax - p_ymin));
+
+      PLFLT ticks[16];
+
+      PLINT nticks = ax.getTickFinder()(PL_X_AXIS, sizeof(ticks), ticks, xmin,
+                                        xmax, nullptr);
+
+      for (PLINT i = 0; i < nticks; i++) {
+
+        _plstream->join(ticks[i], ymax + dy, ticks[i], ymax);
+
+        double pos = (ticks[i] - xmin) / dx;
+
+        if(xmin > xmax) {
+
+          pos = (xmin - ticks[i]) / dx;
+        }
+
+        char label[16];
+
+        if (ax.getLabelFormatter()) {
+
+          ax.getLabelFormatter()(PL_X_AXIS, ticks[i], label, sizeof(label),
+                                 nullptr);
+        } else {
+
+          snprintf(label, sizeof(label), "%g", ticks[i]);
+        }
+
+        _plstream->mtex("t", 1.5, pos, 0.5, label);
+      }
+    } else {
+
+      _plstream->slabelfunc(ax.getLabelFormatter(), nullptr);
+
+      _plstream->axes(0.0, 0.0, ax.getAxisOptString().data(), 0, 0, "", 0, 0);
+    }
 
     if (ax.getAxisOptString().find('m') != std::string::npos) {
 
@@ -584,9 +636,70 @@ void Canvas::drawPlot(Plot *plot) {
       _plstream->wind(xmin, xmax, ymin, ymax);
     }
 
-    _plstream->slabelfunc(ax.getLabelFormatter(), nullptr);
+    if (ax.getTickFinder()) {
 
-    _plstream->axes(0.0, 0.0, "", 0, 0, ax.getAxisOptString().data(), 0, 0);
+      std::string axisoptstr(ax.getAxisOptString());
+
+      const std::string opts("mnst");
+
+      std::string::size_type i;
+      for (const char opt : opts) {
+
+        if ((i = axisoptstr.find(opt)) != std::string::npos) {
+
+          axisoptstr.erase(i, 1);
+        }
+      }
+
+      _plstream->axes(0.0, 0.0, axisoptstr.data(), 0, 0, "", 0, 0);
+
+      PLFLT p_xmin, p_xmax, p_ymin, p_ymax;
+
+      _plstream->gspa(p_xmin, p_xmax, p_ymin, p_ymax);
+
+      double dx = (axisoptstr.find('i') == std::string::npos ? -1.0 : 1.0) *
+                  (xmax - xmin) * _defaultticklength *
+                  plot->getMajorTickLength() /
+                  ((plot->getXMargins().at(1) - plot->getXMargins().at(0)) *
+                   (p_xmax - p_xmin));
+
+      PLFLT dy = abs(ymax - ymin);
+
+      PLFLT ticks[16];
+
+      PLINT nticks = ax.getTickFinder()(PL_Y_AXIS, sizeof(ticks), ticks, ymin,
+                                        ymax, nullptr);
+
+      for (PLINT i = 0; i < nticks; i++) {
+
+        _plstream->join(xmax + dx, ticks[i], xmax, ticks[i]);
+
+        double pos = (ticks[i] - ymin) / dy;
+
+        if (ymin > ymax) {
+
+          pos = (ymin - ticks[i]) / dy;
+        }
+
+        char label[16];
+
+        if (ax.getLabelFormatter()) {
+
+          ax.getLabelFormatter()(PL_Y_AXIS, ticks[i], label, sizeof(label),
+                                 nullptr);
+        } else {
+
+          snprintf(label, sizeof(label), "%g", ticks[i]);
+        }
+
+        _plstream->mtex("l", 1.5, pos, 0.5, label);
+      }
+    } else {
+
+      _plstream->slabelfunc(ax.getLabelFormatter(), nullptr);
+
+      _plstream->axes(0.0, 0.0, "", 0, 0, ax.getAxisOptString().data(), 0, 0);
+    }
 
     if (ax.getAxisOptString().find('m') != std::string::npos) {
 
@@ -596,12 +709,4 @@ void Canvas::drawPlot(Plot *plot) {
       _plstream->mtex("l", 3.5, 0.5, 0.5, ax.getTitle().data());
     }
   }
-
-  /*_plstream->box(plot->getXAxis().front().getAxisOptString().data(), 0, 0,
-                 plot->getYAxis().front().getAxisOptString().data(), 0, 0);
-
-  _plstream->lab(plot->getXAxis().front().getTitle().data(),
-                 plot->getYAxis().front().getTitle().data(),
-  plot->getTitle().data());
-  */
 }

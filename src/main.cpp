@@ -474,10 +474,6 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     panels.setLayout(1, spectra.size());
 
-    plot.getXAxis().at(0).setTitle(xtitle);
-
-    // plot.getXAxis().at(1).setTitle(xtitle2);
-
     formulae = pahdb.getFormulaeFromIds(parameters.getIds());
 
     geometries = pahdb.getGeometriesFromIds(parameters.getIds());
@@ -487,13 +483,19 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     for (const auto &spectrum : spectra) {
 
-      // draw panel grid
-
       plot.setAdvance(false);
+
+      // draw panel grid
 
       plot.setDrawHorizontalFineGrid();
 
       plot.setDrawVerticalFineGrid();
+
+      plot.getXAxis().at(0).setDrawConventionalAxis(false);
+
+      plot.getXAxis().at(0).setDrawUnconventionalAxis(false);
+
+      plot.getXAxis().at(0).setDrawConventionalLabels(false);
 
       plot.getYAxis().at(0).setDrawConventionalAxis(false);
 
@@ -511,10 +513,6 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
       plot.setDrawHorizontalFineGrid(false);
 
       plot.setDrawVerticalFineGrid(false);
-
-      plot.getXAxis().at(0).setDrawConventionalLabels(false);
-
-      plot.getXAxis().at(0).setTitle("");
 
       // Draw panel structure
 
@@ -626,6 +624,10 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
         plot.clear();
       }
 
+      plot.getXAxis().at(0).setDrawConventionalAxis();
+
+      plot.getXAxis().at(0).setDrawUnconventionalAxis();
+
       plot.getYAxis().at(0).setDrawConventionalAxis();
 
       plot.getYAxis().at(0).setDrawUnconventionalAxis();
@@ -645,17 +647,19 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
       plot.clear();
     }
 
-    plots.back().getXAxis().emplace_back();
+    plots.front().getXAxis().at(0).setDrawConventionalLabels();
 
-    plots.back().getXAxis().at(1).setReciprocalLabelFormatter();
+    plots.front().getXAxis().at(0).setTitle(xtitle);
 
     plots.back().getXAxis().at(0).setDrawUnconventionalAxis(false);
 
+    plots.back().getXAxis().emplace_back();
+
+    //plots.back().getXAxis().at(1).setReciprocalTickFinder();
+
+    plots.back().getXAxis().at(1).setReciprocalLabelFormatter();
+
     plots.back().getXAxis().at(1).setDrawConventionalAxis(false);
-
-    plots.back().getXAxis().at(1).setDrawConventionalLabels(false);
-
-    plots.back().getXAxis().at(1).setDrawUnconventionalAxis();
 
     plots.back().getXAxis().at(1).setDrawUnconventionalLabels();
 
@@ -874,6 +878,8 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     plot.getXAxis().emplace_back();
 
+    //plot.getXAxis().at(1).setReciprocalTickFinder();
+
     plot.getXAxis().at(1).setReciprocalLabelFormatter();
 
     plot.getXAxis().at(0).setDrawUnconventionalAxis(false);
@@ -1067,6 +1073,8 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     plot.getXAxis().emplace_back();
 
+    //plot.getXAxis().at(1).setReciprocalTickFinder();
+
     plot.getXAxis().at(1).setReciprocalLabelFormatter();
 
     plot.getXAxis().at(0).setDrawUnconventionalAxis(false);
@@ -1132,6 +1140,8 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
     plot.getXAxis().at(0).setTitle(xtitle);
 
     plot.getXAxis().emplace_back();
+
+    //plot.getXAxis().at(1).setReciprocalTickFinder();
 
     plot.getXAxis().at(1).setReciprocalLabelFormatter();
 

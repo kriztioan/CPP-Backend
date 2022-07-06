@@ -1,10 +1,17 @@
 #ifndef _AXIS_H_
 #define _AXIS_H_
 
+#include <array>
 #include <string>
 #include <string_view>
+#include <vector>
+
+#include <cmath>
 
 #include <plplot/plstream.h>
+
+typedef PLINT (*PLTICK_FUNC_callback)(PLINT axis, PLINT nticks, PLFLT *ticks,
+                                      PLFLT min, PLFLT max, PLPointer data);
 
 class Axis {
 
@@ -57,7 +64,11 @@ public:
 
   void setReciprocalLabelFormatter();
 
+  void setReciprocalTickFinder();
+
   PLLABEL_FUNC_callback getLabelFormatter();
+
+  PLTICK_FUNC_callback getTickFinder();
 
 private:
   std::string _title;
@@ -70,12 +81,18 @@ private:
 
   Style _style;
 
-  PLLABEL_FUNC_callback _callback;
+  PLLABEL_FUNC_callback _label_callback;
+
+  PLTICK_FUNC_callback _tick_callback;
 
   void _set(char option, bool on);
 
-  static void _reciprocal(PLINT axis, PLFLT value, PLCHAR_NC_VECTOR label,
-                   PLINT length, PLPointer data);
+  static void _reciprocal_labeller(PLINT axis, PLFLT value,
+                                   PLCHAR_NC_VECTOR label, PLINT length,
+                                   PLPointer data);
+
+  static PLINT _reciprocal_tickfinder(PLINT axis, PLINT nticks, PLFLT *ticks,
+                                      PLFLT min, PLFLT max, PLPointer data);
 };
 
 inline std::string_view Axis::getAxisOptString() const { return (_axisoptstr); }
@@ -122,11 +139,17 @@ inline const Axis::Style &Axis::getStyle() const { return (_style); }
 
 inline void Axis::setReciprocalLabelFormatter() {
   _set('o', true);
-  _callback = Axis::_reciprocal;
+  _label_callback = Axis::_reciprocal_labeller;
+}
+
+inline void Axis::setReciprocalTickFinder() {
+  _tick_callback = Axis::_reciprocal_tickfinder;
 }
 
 inline PLLABEL_FUNC_callback Axis::getLabelFormatter() {
-  return _callback;
+  return _label_callback;
 }
+
+inline PLTICK_FUNC_callback Axis::getTickFinder() { return _tick_callback; }
 
 #endif /* _AXIS_H_ */
