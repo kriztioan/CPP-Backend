@@ -98,7 +98,7 @@ void Canvas::paintOnPostscript(std::string_view filename) {
 
   _plstream->spage(0.0, 0.0, _size.at(0), _size.at(1), 0.0, 0.0);
 
-  _plstream->sdiori(1);
+  //_plstream->sdiori(1);
 
   _plstream->setopt("aspect", "1");
 
@@ -418,18 +418,18 @@ void Canvas::drawPlot(Plot *plot) {
 
           std::vector<PLFLT> b(curve->getY().begin(), curve->getY().end());
 
-          if (y[0] != 0.0f) {
-
-            a.insert(a.begin(), x[0]);
-
-            b.insert(b.begin(), 0.0f);
-          }
-
           if (y[n - 1] != 0.0f) {
 
             a.push_back(x[n - 1]);
 
             b.push_back(0.0f);
+          }
+
+          if (y[0] != 0.0f) {
+
+            a.insert(a.begin(), x[0]);
+
+            b.insert(b.begin(), 0.0f);
           }
 
           _plstream->fill(a.size(), a.data(), b.data());
@@ -571,7 +571,7 @@ void Canvas::drawPlot(Plot *plot) {
 
         double pos = (ticks[i] - xmin) / dx;
 
-        if(xmin > xmax) {
+        if (xmin > xmax) {
 
           pos = (xmin - ticks[i]) / dx;
         }

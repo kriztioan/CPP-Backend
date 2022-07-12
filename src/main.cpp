@@ -655,7 +655,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     plots.back().getXAxis().emplace_back();
 
-    //plots.back().getXAxis().at(1).setReciprocalTickFinder();
+    // plots.back().getXAxis().at(1).setReciprocalTickFinder();
 
     plots.back().getXAxis().at(1).setReciprocalLabelFormatter();
 
@@ -878,7 +878,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     plot.getXAxis().emplace_back();
 
-    //plot.getXAxis().at(1).setReciprocalTickFinder();
+    // plot.getXAxis().at(1).setReciprocalTickFinder();
 
     plot.getXAxis().at(1).setReciprocalLabelFormatter();
 
@@ -1073,7 +1073,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     plot.getXAxis().emplace_back();
 
-    //plot.getXAxis().at(1).setReciprocalTickFinder();
+    // plot.getXAxis().at(1).setReciprocalTickFinder();
 
     plot.getXAxis().at(1).setReciprocalLabelFormatter();
 
@@ -1141,7 +1141,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     plot.getXAxis().emplace_back();
 
-    //plot.getXAxis().at(1).setReciprocalTickFinder();
+    // plot.getXAxis().at(1).setReciprocalTickFinder();
 
     plot.getXAxis().at(1).setReciprocalLabelFormatter();
 
