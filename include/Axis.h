@@ -48,7 +48,7 @@ public:
 
   void setDrawTicks(bool on);
 
-  void setWriteLabelsParalell(bool on);
+  void setWriteLabelsParallel(bool on);
 
   void setPrecision(int precision);
 
@@ -123,7 +123,7 @@ inline void Axis::setDrawSubTicks(bool on = true) { _set('s', on); }
 
 inline void Axis::setDrawTicks(bool on = true) { _set('t', on); }
 
-inline void Axis::setWriteLabelsParalell(bool on = true) { _set('v', on); }
+inline void Axis::setWriteLabelsParallel(bool on = true) { _set('v', on); }
 
 inline void Axis::setPrecision(int precision) { _precision = precision; }
 

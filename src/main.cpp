@@ -360,7 +360,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
   plot.getVerticalGrid() = plot.getHorizontalGrid();
 
-  plot.getYAxis().at(0).setWriteLabelsParalell();
+  plot.getYAxis().at(0).setWriteLabelsParallel();
 
   plot.getYAxis().at(0).setStyle(Axis::Style::WritePowerInFrame);
 
@@ -654,6 +654,8 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
     plots.back().getXAxis().at(0).setDrawUnconventionalAxis(false);
 
     plots.back().getXAxis().emplace_back();
+
+    plots.back().getXAxis().at(1).setDrawConventionalLabels(false);
 
     // plots.back().getXAxis().at(1).setReciprocalTickFinder();
 
