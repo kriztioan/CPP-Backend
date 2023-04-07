@@ -165,12 +165,44 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
       case Parameters::Arg::Temperature:
 
+        if (parameters.getTable() == PAHdb::Database::Experiment) {
+          std::vector<sql_properties> prop = pahdb.getPropertiesByIDs(
+              parameters.getIds()); // perhaps other name then 'prop'?
+
+          std::vector<int> charges;
+          std::vector<int> carbons;
+          carbons.reserve(parameters.getIds().size());
+          for (const auto &properties : prop) {
+
+            carbons.push_back(properties.n_c);
+          }
+
+          pahemissionmodel.useApproximate(charges, carbons);
+        }
+
         pahemissionmodel.applyTemperatureWithEnergy(parameters.getEnergyInCGS(),
                                                     temperatures);
 
         break;
 
       case Parameters::Arg::Cascade:
+
+        if (parameters.getTable() == PAHdb::Database::Experiment) {
+          std::vector<sql_properties> prop = pahdb.getPropertiesByIDs(
+              parameters.getIds()); // perhaps other name then 'prop'?
+
+          std::vector<int> charges;
+          charges.reserve(parameters.getIds().size());
+          std::vector<int> carbons;
+          carbons.reserve(parameters.getIds().size());
+          for (const auto &properties : prop) {
+
+            charges.push_back(properties.charge);
+            carbons.push_back(properties.n_c);
+          }
+
+          pahemissionmodel.useApproximate(charges, carbons);
+        }
 
         pahemissionmodel.applyCascadeWithEnergy(parameters.getEnergyInCGS(),
                                                 temperatures);
@@ -280,7 +312,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
       unsigned int k = 0;
 
-      if (properties.carbon > 50) {
+      if (properties.n_c > 50) {
 
         for (auto &l : large) {
 
@@ -479,7 +511,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
     geometries = pahdb.getGeometriesFromIds(parameters.getIds());
 
     std::for_each(geometries.begin(), geometries.end(),
-                  std::mem_fun_ref(&PAHGeometry::diagonalize));
+                  std::mem_fn(&PAHGeometry::diagonalize));
 
     for (const auto &spectrum : spectra) {
 
@@ -749,7 +781,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
     geometries = pahdb.getGeometriesFromIds(parameters.getIds());
 
     std::for_each(geometries.begin(), geometries.end(),
-                  std::mem_fun_ref(&PAHGeometry::diagonalize));
+                  std::mem_fn(&PAHGeometry::diagonalize));
 
     plot.setDrawHorizontalFineGrid(false);
 

@@ -472,15 +472,37 @@ PAHdb::getPropertiesByIDs(const std::vector<int> &ids) {
 
     query.reset();
 
-    query << "SELECT uid, n_h, n_c, n_n, n_o, n_mg, n_si, n_fe, charge, "
-             "n_solo, n_duo, n_trio, n_quartet, n_quintet, n_ch2, n_chx FROM "
-          << tables[static_cast<int>(_table)] << "species WHERE id IN ("
-          << ids.front();
+    if (_table == PAHdb::Database::Theory) {
+
+      query << "SELECT uid, n_h, n_c, n_n, n_o, n_mg, n_si, n_fe, charge, "
+               "n_solo, n_duo, n_trio, n_quartet, n_quintet, n_ch2, n_chx FROM "
+            << tables[static_cast<int>(_table)] << "species WHERE id IN ("
+            << ids.front();
+    } else if (_table == PAHdb::Database::Experiment) {
+
+      query << "SELECT t1.uid, t2.n_h, t2.n_c, t2.n_n, t2.n_o, t2.n_mg, "
+               "t2.n_si, t2.n_fe, t2.charge, t2.n_solo, t2.n_duo, t2.n_trio, "
+               "t2.n_quartet, t2.n_quintet, t2.n_ch2, t2.n_chx FROM (SELECT * "
+               "FROM "
+            << tables[static_cast<int>(_table)]
+            << "species AS s WHERE status & 2 = 0 AND id IN (" << ids.front();
+    }
 
     std::for_each(std::next(ids.cbegin(), 1), ids.cend(),
                   [&](auto &id) { query << "," << id; });
 
-    query << ") ORDER BY FIELD(id";
+    query << ')';
+
+    if (_table == PAHdb::Database::Experiment) {
+
+      query << ") AS t1, (SELECT * FROM species AS s1 WHERE status & 2 = 0 "
+               "AND update_number = (SELECT MAX(update_number) FROM species AS "
+               "s3 WHERE status & 2 = 0 AND s1.uid = s3.uid)) AS t2 WHERE "
+               "t1.uid = t2.uid";
+    }
+
+    query << " ORDER BY FIELD("
+          << (_table == PAHdb::Database::Experiment ? "t1." : "") << "id";
 
     for (const auto &id : ids) {
 

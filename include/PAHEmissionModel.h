@@ -24,14 +24,23 @@ public:
 
   static double _frequency;
 
+  static double _nc;
+
+  static bool _approximate;
+
   static double solveInitialTemperatureFunc(double temperature,
                                             void *transitions);
+
+  static double solveApproximateInitialTemperatureFunc(double temperature,
+                                                       void *nc);
 
   static double integralOverHeatCapacity(double temperature, void *transitions);
 
   static double heatCapacity(double temperature, void *transitions);
 
   static double featureStrength(double temperature, void *transitions);
+
+  static double approximateFeatureStrength(double temperature, void *charge);
 
   static void convertFromFrequencyToWavelength(std::vector<double> &grid);
 
@@ -44,6 +53,8 @@ public:
 
   static void convertFromWavelengthToFrequency(
       std::vector<std::vector<std::pair<double, double>>> &transitions);
+
+  void useApproximate(std::vector<int> &charges, std::vector<int> &carbons);
 
   PAHEmissionModel();
 
@@ -107,6 +118,10 @@ private:
 
   static constexpr double BoltzmannConstant = 1.3806504e-16;
 
+  std::vector<int> _charges;
+
+  std::vector<int> _carbons;
+
   std::vector<std::vector<std::pair<double, double>>> _transitions;
 
   std::vector<double> _grid;
@@ -162,6 +177,13 @@ inline double PAHEmissionModel::Blackbody(double frequency,
       (exp(PlanckConstant * SpeedOfLight * frequency /
            (BoltzmannConstant * temperature)) -
        1.0));
+}
+
+inline void PAHEmissionModel::useApproximate(std::vector<int> &charges,
+                                             std::vector<int> &carbons) {
+  _approximate = true;
+  _charges = charges;
+  _carbons = carbons;
 }
 
 #endif /* PAHEMISSIONMODEL_H_ */

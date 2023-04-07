@@ -7,10 +7,16 @@
 #include <mysql++/mysql++.h>
 #include <mysql++/ssqls.h>
 
-sql_create_16(sql_properties, 1, 0, int, uid, int, hydrogen, int, carbon, int,
-              nitrogen, int, oxygen, int, magnesium, int, silicate, int, iron,
-              int, charge, int, solo, int, duo, int, trio, int, quartet, int,
-              quintet, int, ch2, int, chx);
+sql_create_16(sql_properties, 1, 0, mysqlpp::sql_int_unsigned, uid,
+              mysqlpp::sql_int_unsigned, n_h, mysqlpp::sql_int_unsigned, n_c,
+              mysqlpp::sql_int_unsigned, n_n, mysqlpp::sql_int_unsigned, n_o,
+              mysqlpp::sql_int_unsigned, n_mg, mysqlpp::sql_int_unsigned, n_si,
+              mysqlpp::sql_int_unsigned, n_fe, mysqlpp::sql_int, charge,
+              mysqlpp::sql_int_unsigned, n_solo, mysqlpp::sql_int_unsigned,
+              n_duo, mysqlpp::sql_int_unsigned, n_trio,
+              mysqlpp::sql_int_unsigned, n_quartet, mysqlpp::sql_int_unsigned,
+              n_quintet, mysqlpp::sql_int_unsigned, n_ch2,
+              mysqlpp::sql_int_unsigned, n_chx);
 
 #include <unistd.h>
 

@@ -21,7 +21,7 @@ EXEC      = napisd
 all : ${EXEC}
 
 ${EXEC} : ${OBJ}main.o ${OBJ}Parameters.o ${OBJ}PAHdb.o ${OBJ}PAHEmissionModel.o ${OBJ}SpectralFitter.o ${OBJ}FileInput.o ${OBJ}FileOutput.o ${OBJ}Canvas.o ${OBJ}MinMax.o
-	${CC} ${CCFLAGS} ${CCLIB} ${CCOPT} -o ${BIN}${EXEC} ${OBJ}/*.o
+	${CC} -o ${BIN}${EXEC} ${OBJ}/*.o ${CCLIB} ${CCOPT}
 
 ${OBJ}main.o : ${SRC}main.cpp
 	${CC} ${CCFLAGS} ${CCOPT} -o $@ -c ${SRC}main.cpp

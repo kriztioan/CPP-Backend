@@ -4,6 +4,10 @@ double PAHEmissionModel::_energy;
 
 double PAHEmissionModel::_frequency;
 
+double PAHEmissionModel::_nc;
+
+bool PAHEmissionModel::_approximate = false;
+
 PAHEmissionModel::PAHEmissionModel()
     : _transitions(std::vector<std::vector<std::pair<double, double>>>(0)),
       _grid(std::vector<double>(0)) {}
@@ -207,7 +211,14 @@ void PAHEmissionModel::applyTemperatureWithEnergy(
 
   temperatures.reserve(_transitions.size());
 
+  int j = 0;
+
   for (auto &transition : _transitions) {
+
+    if (_approximate) {
+
+      _nc = static_cast<double>(_carbons.at(j++));
+    }
 
     temperatures.push_back(solveInitialTemperature(energy, transition));
   }
@@ -230,10 +241,32 @@ void PAHEmissionModel::applyCascadeWithEnergy(
 
   gsl_integration_workspace *w = gsl_integration_workspace_alloc(MaxSteps);
 
+  gsl_function F;
+
+  if (!_approximate) {
+
+    F.function = PAHEmissionModel::featureStrength;
+  } else {
+
+    F.function = PAHEmissionModel::approximateFeatureStrength;
+  }
+
+  int j = 0;
+
   for (auto &transition : _transitions) {
 
     std::vector<std::pair<double, double>> transitions(transition.cbegin(),
                                                        transition.cend());
+
+    if (!_approximate) {
+
+      F.params = &transitions;
+    } else {
+
+      _nc = static_cast<double>(_carbons.at(j));
+
+      F.params = &_charges.at(j++);
+    }
 
     TemperatureMax = solveInitialTemperature(energy, transitions);
 
@@ -247,12 +280,6 @@ void PAHEmissionModel::applyCascadeWithEnergy(
       }
 
       PAHEmissionModel::_frequency = t.first;
-
-      gsl_function F;
-
-      F.function = PAHEmissionModel::featureStrength;
-
-      F.params = &transitions;
 
       gsl_integration_qag(&F, TemperatureMin, TemperatureMax, 0,
                           IntegrationAccuracy, MaxSteps, GSL_INTEG_GAUSS61, w,
@@ -293,6 +320,60 @@ double PAHEmissionModel::featureStrength(double temperature,
           (1.0 / (std::accumulate(sum.begin(), sum.end(), 0.0))));
 }
 
+double PAHEmissionModel::approximateFeatureStrength(double temperature,
+                                                    void *charge) {
+
+  double a = 0.0, b = 0.0;
+
+  if (*static_cast<int *>(charge) != 0) {
+    if (temperature > 1000.0) {
+      a = 4.8e-4;
+      b = 1.6119;
+    } else if (temperature > 300.0 && temperature <= 1000.0) {
+      a = 6.38e-7;
+      b = 2.5556;
+    } else if (temperature > 100.0 && temperature <= 300.0) {
+      a = 1.69e-12;
+      b = 4.7687;
+    } else if (temperature > 40.0 && temperature <= 100.0) {
+      a = 7.70e-9;
+      b = 2.9244;
+    } else if (temperature > 20.0 && temperature <= 40.0) {
+      a = 3.47e-12;
+      b = 5.0428;
+    } else if (temperature > 2.7 && temperature <= 20.0) {
+      a = 4.47e-19;
+      b = 10.3870;
+    }
+  } else {
+    if (temperature > 270.0) {
+      a = 5.52e-7;
+      b = 2.5270;
+    } else if (temperature > 200.0 && temperature <= 270.0) {
+      a = 1.70e-9;
+      b = 3.5607;
+    } else if (temperature > 60.0 && temperature <= 200.0) {
+      a = 1.35e-11;
+      b = 4.4800;
+    } else if (temperature > 30.0 && temperature <= 60.0) {
+      a = 4.18e-8;
+      b = 2.5217;
+    } else if (temperature > 2.7 && temperature <= 30.0) {
+      a = 1.88e-16;
+      b = 8.1860;
+    }
+  }
+
+  double val = 1.4387751297850830401 * _frequency / temperature;
+
+  if (a <= 0.0 || val > log(DBL_MAX)) {
+
+    return 0.0;
+  }
+
+  return 1.0 / ((exp(val) - 1.0) * a * pow(temperature, b));
+}
+
 double PAHEmissionModel::solveInitialTemperature(
     double energy, std::vector<std::pair<double, double>> &transitions) {
 
@@ -310,9 +391,17 @@ double PAHEmissionModel::solveInitialTemperature(
 
   gsl_function F;
 
-  F.function = PAHEmissionModel::solveInitialTemperatureFunc;
+  if (!_approximate) {
 
-  F.params = &transitions;
+    F.function = PAHEmissionModel::solveInitialTemperatureFunc;
+
+    F.params = &transitions;
+  } else {
+
+    F.function = PAHEmissionModel::solveApproximateInitialTemperatureFunc;
+
+    F.params = &_nc;
+  }
 
   T = gsl_root_fsolver_brent;
 
@@ -347,6 +436,16 @@ double PAHEmissionModel::solveInitialTemperature(
 inline double PAHEmissionModel::solveInitialTemperatureFunc(double temperature,
                                                             void *transitions) {
   return integralOverHeatCapacity(temperature, transitions) - _energy;
+}
+
+inline double
+PAHEmissionModel::solveApproximateInitialTemperatureFunc(double temperature,
+                                                         void *nc) {
+
+  return *static_cast<double *>(nc) *
+             (7.54267e-11 * erf(-4.989231 + 0.41778 * log(temperature)) +
+              7.542670e-11) -
+         _energy;
 }
 
 double PAHEmissionModel::integralOverHeatCapacity(double temperature,
