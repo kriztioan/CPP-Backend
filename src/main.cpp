@@ -147,6 +147,25 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
         pahemissionmodel.setTransitions(transitions);
       }
 
+      if (parameters.getTable() == PAHdb::Database::Experiment &&
+          (parameters.getModel() == Parameters::Arg::Temperature ||
+           parameters.getModel() == Parameters::Arg::Cascade)) {
+        std::vector<sql_properties> prop = pahdb.getPropertiesByIDs(
+            parameters.getIds()); // perhaps other name then 'prop'?
+
+        std::vector<int> charges;
+        charges.reserve(parameters.getIds().size());
+        std::vector<int> carbons;
+        carbons.reserve(parameters.getIds().size());
+        for (const auto &properties : prop) {
+
+          charges.push_back(properties.charge);
+          carbons.push_back(properties.n_c);
+        }
+
+        pahemissionmodel.useApproximate(charges, carbons);
+      }
+
       switch (parameters.getModel()) {
 
       case Parameters::Arg::FixedTemperature:
@@ -165,44 +184,12 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
       case Parameters::Arg::Temperature:
 
-        if (parameters.getTable() == PAHdb::Database::Experiment) {
-          std::vector<sql_properties> prop = pahdb.getPropertiesByIDs(
-              parameters.getIds()); // perhaps other name then 'prop'?
-
-          std::vector<int> charges;
-          std::vector<int> carbons;
-          carbons.reserve(parameters.getIds().size());
-          for (const auto &properties : prop) {
-
-            carbons.push_back(properties.n_c);
-          }
-
-          pahemissionmodel.useApproximate(charges, carbons);
-        }
-
         pahemissionmodel.applyTemperatureWithEnergy(parameters.getEnergyInCGS(),
                                                     temperatures);
 
         break;
 
       case Parameters::Arg::Cascade:
-
-        if (parameters.getTable() == PAHdb::Database::Experiment) {
-          std::vector<sql_properties> prop = pahdb.getPropertiesByIDs(
-              parameters.getIds()); // perhaps other name then 'prop'?
-
-          std::vector<int> charges;
-          charges.reserve(parameters.getIds().size());
-          std::vector<int> carbons;
-          carbons.reserve(parameters.getIds().size());
-          for (const auto &properties : prop) {
-
-            charges.push_back(properties.charge);
-            carbons.push_back(properties.n_c);
-          }
-
-          pahemissionmodel.useApproximate(charges, carbons);
-        }
 
         pahemissionmodel.applyCascadeWithEnergy(parameters.getEnergyInCGS(),
                                                 temperatures);

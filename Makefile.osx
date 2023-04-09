@@ -10,10 +10,10 @@ BIN       = ../local/bin/
 
 TESTS     = gtests
 TESTSDIR  = tests
-TESTSLIBS = -lgtest -lgtest_main -lpthread -lgcov
-TESTOPT   =
-ifeq (${MAKECMDGOALS}, tests)
-TESTSOPT  = -fprofile-arcs -ftest-coverage
+ifeq (${MAKECMDGOALS},tests)
+TESTSLIBS = -L../local/usr/local/lib/ -lgtest -lgtest_main -lpthread -lgcov
+TESTSOPT  = -I../local/usr/local/include
+TESTSOPT += -fprofile-arcs -ftest-coverage
 endif
 
 EXEC      = napisd
