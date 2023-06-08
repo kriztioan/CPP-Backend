@@ -16,7 +16,7 @@ jobs:
           test ! -h /usr/local/lib/libgtest.a && sudo ln -s libgtest.a /usr/local/lib/libgtest.a
           test ! -h /usr/local/lib/libgtest_main.a && sudo ln -s libgtest_main.a /usr/local/lib/libgtest_main.a
           cd -
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Check code style
         run: |
           clang-format --dry-run -Werror *.h *.cpp include/*.h src/*.cpp
