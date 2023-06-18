@@ -96,14 +96,15 @@ private:
   void draw(Plot *plot);
 };
 
-inline CanvasItem &Canvas::operator[](std::size_t idx) { return (*_items[idx]); }
-
-inline void Canvas::erase() {
-  _items.erase(_items.begin(), _items.end());
+inline CanvasItem &Canvas::operator[](std::size_t idx) {
+  return (*_items[idx]);
 }
 
-inline void Canvas::erase(std::vector<std::unique_ptr<CanvasItem>>::iterator begin,
-                          std::vector<std::unique_ptr<CanvasItem>>::iterator end) {
+inline void Canvas::erase() { _items.erase(_items.begin(), _items.end()); }
+
+inline void
+Canvas::erase(std::vector<std::unique_ptr<CanvasItem>>::iterator begin,
+              std::vector<std::unique_ptr<CanvasItem>>::iterator end) {
   _items.erase(begin, end);
 }
 

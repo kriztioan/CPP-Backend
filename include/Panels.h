@@ -1,9 +1,9 @@
 #ifndef _PANELS_H_
 #define _PANELS_H_
 
+#include "Axis.h"
 #include "CanvasItem.h"
 #include "Plot.h"
-#include "Axis.h"
 
 #include <array>
 
@@ -60,14 +60,15 @@ private:
   int _rows;
 };
 
-inline CanvasItem &Panels::operator[](std::size_t idx) { return (*_items[idx]); }
-
-inline void Panels::erase() {
-  _items.erase(_items.begin(), _items.end());
+inline CanvasItem &Panels::operator[](std::size_t idx) {
+  return (*_items[idx]);
 }
 
-inline void Panels::erase(std::vector<std::unique_ptr<CanvasItem>>::iterator begin,
-                          std::vector<std::unique_ptr<CanvasItem>>::iterator end) {
+inline void Panels::erase() { _items.erase(_items.begin(), _items.end()); }
+
+inline void
+Panels::erase(std::vector<std::unique_ptr<CanvasItem>>::iterator begin,
+              std::vector<std::unique_ptr<CanvasItem>>::iterator end) {
   _items.erase(begin, end);
 }
 
