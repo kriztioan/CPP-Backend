@@ -1,66 +1,58 @@
 #include "Plot.h"
 
 Plot::Plot()
-    : _xlimits({2.0, 0.0}), _ylimits({2.0, 0.0}), _zlimits({2.0, 0.0}),
+    : _xlimits({-1.0, 1.0}), _ylimits({-1.0, 1.0}), _zlimits({-1.0, 1.0}),
       _xmargins({0.15, 0.9}), _ymargins({0.15, 0.85}), _zmargins({0.15, 0.9}),
       _title(""), _fontsize(1.0), _majorticklength(1.0),
       _minorticklength(2.0 / 3.0), _drawhorizontalgrid(false),
       _drawverticalgrid(false), _drawhorizontalfinegrid(false),
       _drawverticalfinegrid(false), _advance(true) {
 
-  _wrappers.reserve(4);
+  type = Type::I_Plot;
+  _items.reserve(4);
   _xaxis.emplace_back();
   _yaxis.emplace_back();
   _zaxis.emplace_back();
 }
+Plot::Plot(Plot const &other) {
+  type = other.type;
 
-void Plot::addPoint(Point &point) {
+  _xlimits = other._xlimits;
+  _ylimits = other._ylimits;
+  _zlimits = other._zlimits;
+  _xmargins = other._xmargins;
+  _ymargins = other._ymargins;
+  _zmargins = other._zmargins;
+  _title = other._title;
+  _horizontalgrid = other._horizontalgrid;
+  _verticalgrid = other._verticalgrid;
+  _xaxis = other._xaxis;
+  _yaxis = other._yaxis;
+  _zaxis = other._zaxis;
+  _fontsize = other._fontsize;
+  _majorticklength = other._majorticklength;
+  _minorticklength = other._minorticklength;
+  _drawhorizontalgrid = other._drawhorizontalgrid;
+  _drawverticalgrid = other._drawverticalgrid;
+  _drawhorizontalfinegrid = other._drawhorizontalfinegrid;
+  _drawverticalfinegrid = other._drawverticalfinegrid;
+  _advance = other._advance;
 
-  _wrappers.emplace_back(Wrapper::Type::W_Point,
-                         static_cast<Wrapper::Data>(&point));
-}
+  for (auto &item : other._items) {
 
-void Plot::addPoints(std::vector<Point> &points) {
-
-  for (auto &point : points) {
-
-    _wrappers.emplace_back(Wrapper::Type::W_Point,
-                           static_cast<Wrapper::Data>(&point));
+    _items.emplace_back(std::unique_ptr<CanvasItem>(item->clone()));
   }
 }
+Plot *Plot::clone() const { return new Plot(*this); }
+void Plot::add(CanvasItem &item) {
 
-void Plot::addLine(Line &line) {
-
-  _wrappers.emplace_back(Wrapper::Type::W_Line,
-                         static_cast<Wrapper::Data>(&line));
+  _items.emplace_back(std::unique_ptr<CanvasItem>(item.clone()));
 }
 
-void Plot::addLines(std::vector<Line> &lines) {
+void Plot::add(std::vector<CanvasItem> &items) {
 
-  for (auto &line : lines) {
+  for (auto &item : items) {
 
-    _wrappers.emplace_back(Wrapper::Type::W_Line,
-                           static_cast<Wrapper::Data>(&line));
+    _items.emplace_back(std::unique_ptr<CanvasItem>(item.clone()));
   }
-}
-
-void Plot::addCurve(Curve &curve) {
-
-  _wrappers.emplace_back(Wrapper::Type::W_Curve,
-                         static_cast<Wrapper::Data>(&curve));
-}
-
-void Plot::addCurves(std::vector<Curve> &curves) {
-
-  for (auto &curve : curves) {
-
-    _wrappers.emplace_back(Wrapper::Type::W_Curve,
-                           static_cast<Wrapper::Data>(&curve));
-  }
-}
-
-void Plot::addText(Text &text) {
-
-  _wrappers.emplace_back(Wrapper::Type::W_Text,
-                         static_cast<Wrapper::Data>(&text));
 }

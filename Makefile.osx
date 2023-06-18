@@ -1,4 +1,4 @@
-CC        =  g++-12
+CC        =  g++-13
 CCFLAGS   = -I./include -I/usr/local/include -I../local/include/ -I/Applications/MAMP/Library/include
 CCLIB     = -L../local/lib -lmysqlpp -L/Applications/MAMP/Library/lib -lmysqlclient -L/usr/local/lib -lplplotcxx -lgsl -lcfitsio -ltinyxml2 -lCCfits
 CCOPT     = -std=c++17 -Wall -fpermissive -O3 -flto#-g -DDEBUG -Wextra -O0 -fsanitize=address,float-divide-by-zero,bounds,alignment,object-size,float-cast-overflow,shift,integer-divide-by-zero,unreachable,vla-bound,null,return,signed-integer-overflow
@@ -26,10 +26,8 @@ ${EXEC} : ${OBJ}main.o ${OBJ}Parameters.o ${OBJ}PAHdb.o ${OBJ}PAHEmissionModel.o
 ${OBJ}main.o : ${SRC}main.cpp
 	${CC} ${CCFLAGS} ${CCOPT} -o $@ -c ${SRC}main.cpp
 
-${OBJ}Wrapper.o : ${SRC}Wrapper.cpp ${INC}Wrapper.h ${INC}Point.h ${INC}Line.h ${INC}Curve.h ${INC}Plot.h ${INC}Text.h
-	${CC} ${CCFLAGS} ${CCOPT} -o $@ -c ${SRC}Wrapper.cpp
 
-${OBJ}Panels.o : ${SRC}Panels.cpp ${INC}Panels.h ${OBJ}Wrapper.o ${OBJ}Plot.o
+${OBJ}Panels.o : ${SRC}Panels.cpp ${INC}Panels.h ${OBJ}Plot.o
 	${CC} ${CCFLAGS} ${CCOPT} -o $@ -c ${SRC}Panels.cpp
 
 ${OBJ}Text.o : ${SRC}Text.cpp ${INC}Text.h
@@ -38,7 +36,7 @@ ${OBJ}Text.o : ${SRC}Text.cpp ${INC}Text.h
 ${OBJ}Point.o : ${SRC}Point.cpp ${INC}Point.h
 	${CC} ${CCFLAGS} ${CCOPT} -o $@ -c ${SRC}Point.cpp
 
-${OBJ}Plot.o : ${SRC}Plot.cpp ${INC}Plot.h ${OBJ}Wrapper.o ${OBJ}Point.o ${OBJ}Line.o ${OBJ}LineProperties.o ${OBJ}Curve.o ${OBJ}Axis.o
+${OBJ}Plot.o : ${SRC}Plot.cpp ${INC}Plot.h ${OBJ}Point.o ${OBJ}Line.o ${OBJ}LineProperties.o ${OBJ}Curve.o ${OBJ}Axis.o
 	${CC} ${CCFLAGS} ${CCOPT} -o $@ -c ${SRC}Plot.cpp
 
 ${OBJ}Parameters.o : ${SRC}Parameters.cpp ${INC}Parameters.h ${INC}Exception.h
@@ -77,7 +75,7 @@ ${OBJ}FileOutput.o : ${SRC}FileOutput.cpp ${INC}FileOutput.h ${INC}Exception.h
 ${OBJ}Curve.o : ${SRC}Curve.cpp ${INC}Curve.h ${OBJ}LineProperties.o
 	${CC} ${CCFLAGS} ${CCOPT} -o $@ -c ${SRC}Curve.cpp
 
-${OBJ}Canvas.o : ${SRC}Canvas.cpp ${INC}Canvas.h ${INC}Exception.h ${OBJ}Wrapper.o ${OBJ}Plot.o ${OBJ}Text.o ${OBJ}Panels.o
+${OBJ}Canvas.o : ${SRC}Canvas.cpp ${INC}Canvas.h ${INC}Exception.h ${OBJ}Plot.o ${OBJ}Text.o ${OBJ}Panels.o
 	${CC} ${CCFLAGS} ${CCOPT} -o $@ -c ${SRC}Canvas.cpp
 
 ${OBJ}Axis.o : ${SRC}Axis.cpp ${INC}Axis.h

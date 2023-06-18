@@ -7,7 +7,19 @@
 
 #include "Exception.h"
 
-#include "Wrapper.h"
+#include "CanvasItem.h"
+
+#include "Point.h"
+
+#include "Line.h"
+
+#include "Curve.h"
+
+#include "Plot.h"
+
+#include "Text.h"
+
+#include "Panels.h"
 
 #include <cmath>
 
@@ -23,28 +35,24 @@
 class Canvas {
 
 public:
-  typedef std::vector<Wrapper>::iterator iterator;
+  typedef std::vector<std::unique_ptr<CanvasItem>>::iterator iterator;
 
   Canvas();
 
-  Wrapper &operator[](std::size_t idx);
+  CanvasItem &operator[](std::size_t idx);
 
-  iterator begin() noexcept { return (_wrappers.begin()); }
+  iterator begin() noexcept { return (_items.begin()); }
 
-  iterator end() noexcept { return (_wrappers.end()); }
+  iterator end() noexcept { return (_items.end()); }
 
-  void addPlot(Plot &plot);
+  void add(CanvasItem &item);
 
-  void addPlots(std::vector<Plot> &plots);
-
-  void addText(Text &text);
-
-  void addPanels(Panels &panels);
+  void add(std::vector<Plot> &plots);
 
   void erase();
 
-  void erase(std::vector<Wrapper>::iterator begin,
-             std::vector<Wrapper>::iterator end);
+  void erase(std::vector<std::unique_ptr<CanvasItem>>::iterator begin,
+             std::vector<std::unique_ptr<CanvasItem>>::iterator end);
 
   void setSize(const std::array<int, 2> size);
 
@@ -73,7 +81,7 @@ private:
 
   std::vector<std::string> _colormap;
 
-  std::vector<Wrapper> _wrappers;
+  std::vector<std::unique_ptr<CanvasItem>> _items;
 
   std::array<int, 2> _size;
 
@@ -85,18 +93,18 @@ private:
 
   void paint();
 
-  void drawPlot(Plot *plot);
+  void draw(Plot *plot);
 };
 
-inline Wrapper &Canvas::operator[](std::size_t idx) { return (_wrappers[idx]); }
+inline CanvasItem &Canvas::operator[](std::size_t idx) { return (*_items[idx]); }
 
 inline void Canvas::erase() {
-  _wrappers.erase(_wrappers.begin(), _wrappers.end());
+  _items.erase(_items.begin(), _items.end());
 }
 
-inline void Canvas::erase(std::vector<Wrapper>::iterator begin,
-                          std::vector<Wrapper>::iterator end) {
-  _wrappers.erase(begin, end);
+inline void Canvas::erase(std::vector<std::unique_ptr<CanvasItem>>::iterator begin,
+                          std::vector<std::unique_ptr<CanvasItem>>::iterator end) {
+  _items.erase(begin, end);
 }
 
 inline void Canvas::setSize(const std::array<int, 2> size) { _size = size; }

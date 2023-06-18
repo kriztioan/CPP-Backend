@@ -2,10 +2,11 @@
 
 Curve::Curve()
     : _fillcolor("ff000099"), _symbolsize(1), _fill(false), _symbol(0) {
+  type = Type::I_Curve;
   _x.reserve(8);
   _y.reserve(8);
 }
-
+Curve *Curve::clone() const { return new Curve(*this); }
 void Curve::setXAndY(const double x, const double y) {
 
   _x.clear();

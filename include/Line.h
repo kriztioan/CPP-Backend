@@ -1,15 +1,16 @@
 #ifndef _LINE_H_
 #define _LINE_H_
 
+#include "CanvasItem.h"
 #include "LineProperties.h"
 
 #include <array>
 
-class Line : public LineProperties {
+class Line : public CanvasItem, public LineProperties {
 
 public:
   Line();
-
+  Line *clone() const;
   void setStartCoordinates(const std::array<double, 3> &coordinates);
 
   void setStartCoordinates(double x, double y, double z);

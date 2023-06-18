@@ -1,7 +1,7 @@
 #ifndef _PLOT_H_
 #define _PLOT_H_
 
-#include "Wrapper.h"
+#include "CanvasItem.h"
 
 #include "Line.h"
 
@@ -12,41 +12,33 @@
 #include "Axis.h"
 
 #include <array>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
 
-class Plot : public LineProperties {
+class Plot : public CanvasItem, public LineProperties {
 
 public:
-  typedef std::vector<Wrapper>::iterator iterator;
+  typedef std::vector<std::unique_ptr<CanvasItem>>::iterator iterator;
 
   Plot();
+  virtual Plot *clone() const;
+  Plot(Plot const &other);
+  CanvasItem &operator[](std::size_t idx);
 
-  Wrapper &operator[](std::size_t idx);
+  iterator begin() noexcept { return (_items.begin()); }
 
-  iterator begin() noexcept { return (_wrappers.begin()); }
+  iterator end() noexcept { return (_items.end()); }
 
-  iterator end() noexcept { return (_wrappers.end()); }
+  void add(CanvasItem &item);
 
-  void addPoint(Point &point);
-
-  void addPoints(std::vector<Point> &points);
-
-  void addLine(Line &line);
-
-  void addLines(std::vector<Line> &lines);
-
-  void addCurve(Curve &curve);
-
-  void addCurves(std::vector<Curve> &curves);
-
-  void addText(Text &text);
+  void add(std::vector<CanvasItem> &items);
 
   void clear();
 
-  void erase(std::vector<Wrapper>::iterator begin,
-             std::vector<Wrapper>::iterator end);
+  void erase(std::vector<std::unique_ptr<CanvasItem>>::iterator begin,
+             std::vector<std::unique_ptr<CanvasItem>>::iterator end);
 
   void setXLimits(const std::array<double, 2> &limits);
 
@@ -118,8 +110,14 @@ public:
 
   const double &getMinorTickLength() const;
 
+  void test() {
+    for (auto &item : _items) {
+      printf("%d\n", (int)item->type);
+    }
+  }
+
 private:
-  std::vector<Wrapper> _wrappers;
+  std::vector<std::unique_ptr<CanvasItem>> _items;
 
   std::array<double, 2> _xlimits;
 
@@ -162,13 +160,14 @@ private:
   bool _advance;
 };
 
-inline Wrapper &Plot::operator[](std::size_t idx) { return (_wrappers[idx]); }
+inline CanvasItem &Plot::operator[](std::size_t idx) { return (*_items[idx]); }
 
-inline void Plot::clear() { _wrappers.clear(); }
+inline void Plot::clear() { _items.clear(); }
 
-inline void Plot::erase(std::vector<Wrapper>::iterator begin,
-                        std::vector<Wrapper>::iterator end) {
-  _wrappers.erase(begin, end);
+inline void
+Plot::erase(std::vector<std::unique_ptr<CanvasItem>>::iterator begin,
+            std::vector<std::unique_ptr<CanvasItem>>::iterator end) {
+  _items.erase(begin, end);
 }
 
 inline void Plot::setXLimits(const std::array<double, 2> &limits) {

@@ -1,33 +1,34 @@
 #ifndef _PANELS_H_
 #define _PANELS_H_
 
-#include "Wrapper.h"
-
+#include "CanvasItem.h"
+#include "Plot.h"
 #include "Axis.h"
 
 #include <array>
 
-class Panels {
+class Panels : public CanvasItem {
 
 public:
-  typedef std::vector<Wrapper>::iterator iterator;
+  typedef std::vector<std::unique_ptr<CanvasItem>>::iterator iterator;
 
   Panels();
+  Panels(Panels const &other);
+  Panels *clone() const;
+  CanvasItem &operator[](std::size_t idx);
 
-  Wrapper &operator[](std::size_t idx);
+  iterator begin() noexcept { return _items.begin(); }
 
-  iterator begin() noexcept { return _wrappers.begin(); }
+  iterator end() noexcept { return _items.end(); }
 
-  iterator end() noexcept { return _wrappers.end(); }
+  void add(CanvasItem &item);
 
-  void addPlot(Plot &plot);
-
-  void addPlots(std::vector<Plot> &plots);
+  void add(std::vector<Plot> &plot);
 
   void erase();
 
-  void erase(std::vector<Wrapper>::iterator begin,
-             std::vector<Wrapper>::iterator end);
+  void erase(std::vector<std::unique_ptr<CanvasItem>>::iterator begin,
+             std::vector<std::unique_ptr<CanvasItem>>::iterator end);
 
   void setXMargins(const std::array<double, 2> &margins);
 
@@ -48,7 +49,7 @@ public:
   const int &getRows() const;
 
 private:
-  std::vector<Wrapper> _wrappers;
+  std::vector<std::unique_ptr<CanvasItem>> _items;
 
   std::array<double, 2> _xmargins;
 
@@ -59,15 +60,15 @@ private:
   int _rows;
 };
 
-inline Wrapper &Panels::operator[](std::size_t idx) { return (_wrappers[idx]); }
+inline CanvasItem &Panels::operator[](std::size_t idx) { return (*_items[idx]); }
 
 inline void Panels::erase() {
-  _wrappers.erase(_wrappers.begin(), _wrappers.end());
+  _items.erase(_items.begin(), _items.end());
 }
 
-inline void Panels::erase(std::vector<Wrapper>::iterator begin,
-                          std::vector<Wrapper>::iterator end) {
-  _wrappers.erase(begin, end);
+inline void Panels::erase(std::vector<std::unique_ptr<CanvasItem>>::iterator begin,
+                          std::vector<std::unique_ptr<CanvasItem>>::iterator end) {
+  _items.erase(begin, end);
 }
 
 inline void Panels::setXMargins(const std::array<double, 2> &margins) {

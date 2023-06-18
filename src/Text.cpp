@@ -1,13 +1,19 @@
 #include "Text.h"
 
 Text::Text()
-    : _coordinates({2.0, 0.0, 0.0}), _text(""), _color("000000"), _size(1.0),
-      _angle(0.0), _justification(LeftJustification),
-      _system(CoordinateSystem::DATA) {}
+    : _coordinates({0.0, 0.0, 0.0}), _text(""), _color("000000"), _size(1.0),
+      _angle(0.0), _justification(CenterJustification),
+      _system(CoordinateSystem::DATA) {
+  type = Type::I_Text;
+}
 
 Text::Text(std::string_view text)
     : _coordinates({2.0, 0.0}), _text(text), _color("000000"), _size(1.0),
-      _angle(0.0), _justification(LeftJustification) {}
+      _angle(0.0), _justification(LeftJustification) {
+  type = Type::I_Text;
+}
+
+Text *Text::clone() const { return new Text(*this); }
 
 void Text::setCoordinates(double x, double y, double z,
                           CoordinateSystem system) {

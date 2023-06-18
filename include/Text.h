@@ -8,7 +8,9 @@
 
 #include <sstream>
 
-class Text {
+#include "CanvasItem.h"
+
+class Text : public CanvasItem {
 
 public:
   enum class CoordinateSystem : char { DATA, NORMAL };
@@ -22,8 +24,8 @@ public:
   static std::string formatChemicalFormula(std::string_view formula);
 
   Text();
-
   Text(std::string_view text);
+  virtual Text *clone() const;
 
   void setCoordinates(const std::array<double, 3> &coordinates,
                       CoordinateSystem system = CoordinateSystem::DATA);

@@ -1,36 +1,22 @@
 #include "Canvas.h"
 
 Canvas::Canvas()
-    : _color("000000"), _size({2, 300}), _defaultcharacterheight(2.25),
+    : _color("ffffff"), _size({300, 200}), _defaultcharacterheight(2.25),
       _defaultticklength(3.0) {
-  _wrappers.reserve(4);
+  _items.reserve(4);
 }
 
-void Canvas::addPlot(Plot &plot) {
+void Canvas::add(CanvasItem &item) {
 
-  _wrappers.emplace_back(Wrapper::Type::W_Plot,
-                         static_cast<Wrapper::Data>(&plot));
+  _items.push_back(std::unique_ptr<CanvasItem>(item.clone()));
 }
 
-void Canvas::addPlots(std::vector<Plot> &plots) {
+void Canvas::add(std::vector<Plot> &plots) {
 
-  for (auto &p : plots) {
+  for (auto &plot : plots) {
 
-    _wrappers.emplace_back(Wrapper::Type::W_Plot,
-                           static_cast<Wrapper::Data>(&p));
+    _items.emplace_back(std::unique_ptr<CanvasItem>(plot.clone()));
   }
-}
-
-void Canvas::addText(Text &text) {
-
-  _wrappers.emplace_back(Wrapper::Type::W_Text,
-                         static_cast<Wrapper::Data>(&text));
-}
-
-void Canvas::addPanels(Panels &panels) {
-
-  _wrappers.emplace_back(Wrapper::Type::W_Panels,
-                         static_cast<Wrapper::Data>(&panels));
 }
 
 PLINT Canvas::lookUpColor(std::string_view hex) {
@@ -161,21 +147,15 @@ void Canvas::paint() {
 
   _plstream->schr(_defaultcharacterheight, 1.0);
 
-  Panels *panels;
-
-  Plot *plot;
-
-  Text *text;
-
   std::array<double, 2> margins;
 
-  for (auto &w : _wrappers) {
+  for (auto &item : _items) {
 
-    switch (w.getType()) {
+    switch (item->type) {
 
-    case Wrapper::Type::W_Plot: {
+    case CanvasItem::Type::I_Plot: {
 
-      plot = static_cast<Plot *>(w.getData());
+      Plot *plot = dynamic_cast<Plot *>(item.get());
 
       if (plot->isAdvance() || !hadfirstpage) {
 
@@ -184,10 +164,10 @@ void Canvas::paint() {
         hadfirstpage = true;
       }
 
-      drawPlot(plot);
+      draw(plot);
     } break;
 
-    case Wrapper::Type::W_Panels: {
+    case CanvasItem::Type::I_Panels: {
       if (!hadfirstpage) {
 
         _plstream->adv(0);
@@ -195,7 +175,7 @@ void Canvas::paint() {
         hadfirstpage = true;
       }
 
-      panels = static_cast<Panels *>(w.getData());
+      Panels *panels = dynamic_cast<Panels *>(item.get());
 
       margins[0] = panels->getYMargins().at(0);
 
@@ -205,7 +185,7 @@ void Canvas::paint() {
 
       for (auto &panel : *panels) {
 
-        plot = static_cast<Plot *>(panel.getData());
+        Plot *plot = dynamic_cast<Plot *>(panel.get());
 
         plot->setYMargins(margins);
 
@@ -218,13 +198,19 @@ void Canvas::paint() {
                                         static_cast<double>(panels->getRows());
         }
 
-        drawPlot(plot);
+        draw(plot);
       }
 
     } break;
-    case Wrapper::Type::W_Text: {
+    case CanvasItem::Type::I_Text: {
+      if (!hadfirstpage) {
 
-      text = static_cast<Text *>(w.getData());
+        _plstream->adv(0);
+
+        hadfirstpage = true;
+      }
+
+      Text *text = dynamic_cast<Text *>(item.get());
 
       _plstream->vpor(0.0, 1.0, 0.0, 1.0);
 
@@ -248,15 +234,7 @@ void Canvas::paint() {
   }
 }
 
-void Canvas::drawPlot(Plot *plot) {
-
-  Point *point;
-
-  Line *line;
-
-  Curve *curve;
-
-  Text *text;
+void Canvas::draw(Plot *plot) {
 
   _plstream->vpor(plot->getXMargins().at(0), plot->getXMargins().at(1),
                   plot->getYMargins().at(0), plot->getYMargins().at(1));
@@ -314,11 +292,11 @@ void Canvas::drawPlot(Plot *plot) {
 
   for (auto &p : *plot) {
 
-    switch (p.getType()) {
+    switch (p->type) {
 
-    case Wrapper::Type::W_Point: {
+    case CanvasItem::Type::I_Point: {
 
-      point = static_cast<Point *>(p.getData());
+      Point *point = dynamic_cast<Point *>(p.get());
 
       _plstream->col0(lookUpColor(point->getColor()));
 
@@ -334,9 +312,9 @@ void Canvas::drawPlot(Plot *plot) {
 
       _plstream->sym(1, &px, &py, point->getSymbol());
     } break;
-    case Wrapper::Type::W_Line: {
+    case CanvasItem::Type::I_Line: {
 
-      line = static_cast<Line *>(p.getData());
+      Line *line = dynamic_cast<Line *>(p.get());
 
       _plstream->col0(lookUpColor(line->getColor()));
 
@@ -348,9 +326,9 @@ void Canvas::drawPlot(Plot *plot) {
           line->getStartCoordinates().at(0), line->getStartCoordinates().at(1),
           line->getEndCoordinates().at(0), line->getEndCoordinates().at(1));
     } break;
-    case Wrapper::Type::W_Curve: {
+    case CanvasItem::Type::I_Curve: {
 
-      curve = static_cast<Curve *>(p.getData());
+      Curve *curve = dynamic_cast<Curve *>(p.get());
 
       if (curve->getX().size() == 0) {
 
@@ -452,9 +430,9 @@ void Canvas::drawPlot(Plot *plot) {
         _plstream->poin(n, x, y, curve->getSymbol());
       }
     } break;
-    case Wrapper::Type::W_Text: {
+    case CanvasItem::Type::I_Text: {
 
-      text = static_cast<Text *>(p.getData());
+      Text *text = dynamic_cast<Text *>(p.get());
 
       _plstream->col0(lookUpColor(text->getColor()));
 
@@ -480,7 +458,7 @@ void Canvas::drawPlot(Plot *plot) {
                         text->getJustification(), text->getText().data());
       }
     } break;
-    case Wrapper::Type::W_Panels:
+    case CanvasItem::Type::I_Panels:
     default:
 
       throw(Exception("Unsupported graphics type"));

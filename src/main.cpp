@@ -571,7 +571,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
                         28.0,
                 geometries.at(i)[j].getZ());
 
-            plot.addLine(line);
+            plot.add(line);
           }
 
           ++j;
@@ -595,7 +595,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
           point.setSize(atom.getSize() / 70.0);
 
-          plot.addPoint(point);
+          plot.add(point);
         }
 
         plots.push_back(plot);
@@ -611,7 +611,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
         text.setCoordinates(0.95, 0.85, 0.0, Text::CoordinateSystem::NORMAL);
 
-        plot.addText(text);
+        plot.add(text);
 
         plots.push_back(plot);
 
@@ -636,7 +636,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
         text.setCoordinates(0.95, 0.75, 0.0, Text::CoordinateSystem::NORMAL);
 
-        plot.addText(text);
+        plot.add(text);
 
         plots.push_back(plot);
 
@@ -657,7 +657,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
       curve.setXAndY(grid, spectra.at(i++));
 
-      plot.addCurve(curve);
+      plot.add(curve);
 
       plot.setAdvance(true);
 
@@ -686,9 +686,9 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     plots.back().getXAxis().at(1).setTitle(xtitle2);
 
-    panels.addPlots(plots);
+    panels.add(plots);
 
-    canvas.addPanels(panels);
+    canvas.add(panels);
 
     text.setColor("000000");
 
@@ -706,7 +706,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
             (panels.getYMargins().at(1) - panels.getYMargins().at(0)) / 2.0,
         0.0);
 
-    canvas.addText(text);
+    canvas.add(text);
 
     break;
   case Parameters::Arg::CompareExperimentWithTheory:
@@ -802,7 +802,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
                     (plot.getYLimits().at(1) - plot.getYLimits().at(0)) / 28.0,
             geometries.at(0)[bond].getZ());
 
-        plot.addLine(line);
+        plot.add(line);
       }
 
       ++i;
@@ -823,7 +823,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
       point.setSize(atom.getSize() / 40.0);
 
-      plot.addPoint(point);
+      plot.add(point);
     }
 
     text.setColor("0000ff");
@@ -834,7 +834,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     text.setCoordinates(0.95, 0.95, 0.0, Text::CoordinateSystem::NORMAL);
 
-    plot.addText(text);
+    plot.add(text);
 
     text.setSize(4);
 
@@ -844,13 +844,13 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     text.setCoordinates(0.5, 0.75, 0.0, Text::CoordinateSystem::NORMAL);
 
-    plot.addText(text);
+    plot.add(text);
 
     text.setText("Experiment");
 
     text.setCoordinates(0.5, 0.25, 0.0, Text::CoordinateSystem::NORMAL);
 
-    plot.addText(text);
+    plot.add(text);
 
     plots.push_back(plot);
 
@@ -884,7 +884,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
       line.setEndCoordinates(transition.first, transition.second, 0.0);
 
-      plot.addLine(line);
+      plot.add(line);
     }
 
     plots.push_back(plot);
@@ -927,12 +927,12 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
       line.setEndCoordinates(transition.first, transition.second, 0.0);
 
-      plot.addLine(line);
+      plot.add(line);
     }
 
     plots.push_back(plot);
 
-    canvas.addPlots(plots);
+    canvas.add(plots);
 
     text.setColor("000000");
 
@@ -947,7 +947,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
     text.setCoordinates(0.0723, margins[0] + (margins[1] - margins[0]) / 2.0,
                         0.0);
 
-    canvas.addText(text);
+    canvas.add(text);
 
     break;
   case Parameters::Arg::SpectralFit:
@@ -961,7 +961,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
       curve.setYErr(std::get<2>(inputdata));
     }
 
-    plot.addCurve(curve);
+    plot.add(curve);
 
     curve.clear();
 
@@ -993,7 +993,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
       curve.setXAndY(grid, spectrum);
 
-      plot.addCurve(curve);
+      plot.add(curve);
 
       ++i;
     }
@@ -1004,7 +1004,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     curve.setLineWidth(2);
 
-    plot.addCurve(curve);
+    plot.add(curve);
 
     plot.setYLimits(MinMax::min_max(sum, MinMax::Nice));
 
@@ -1016,7 +1016,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     text.setCoordinates(0.85, 0.90, 0.0, Text::CoordinateSystem::NORMAL);
 
-    plot.addText(text);
+    plot.add(text);
 
     text.setColor("00ff00");
 
@@ -1024,7 +1024,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     text.setCoordinates(0.85, 0.83, 0.0, Text::CoordinateSystem::NORMAL);
 
-    plot.addText(text);
+    plot.add(text);
 
     text.setColor("0000ff");
 
@@ -1032,7 +1032,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     text.setCoordinates(0.85, 0.76, 0.0, Text::CoordinateSystem::NORMAL);
 
-    plot.addText(text);
+    plot.add(text);
 
     text.setColor("fff00f");
 
@@ -1040,7 +1040,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     text.setCoordinates(0.85, 0.69, 0.0, Text::CoordinateSystem::NORMAL);
 
-    plot.addText(text);
+    plot.add(text);
 
     text.setColor("ff00ff");
 
@@ -1048,7 +1048,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     text.setCoordinates(0.85, 0.62, 0.0, Text::CoordinateSystem::NORMAL);
 
-    plot.addText(text);
+    plot.add(text);
 
     text.setColor("00ffff");
 
@@ -1056,7 +1056,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     text.setCoordinates(0.85, 0.55, 0.0, Text::CoordinateSystem::NORMAL);
 
-    plot.addText(text);
+    plot.add(text);
 
     curve.setXAndY(grid, large);
 
@@ -1064,31 +1064,31 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     curve.setLineWidth(1);
 
-    plot.addCurve(curve);
+    plot.add(curve);
 
     curve.setXAndY(grid, small);
 
     curve.setColor("0000ff");
 
-    plot.addCurve(curve);
+    plot.add(curve);
 
     curve.setXAndY(grid, anion);
 
     curve.setColor("fff00f");
 
-    plot.addCurve(curve);
+    plot.add(curve);
 
     curve.setXAndY(grid, neutral);
 
     curve.setColor("ff00ff");
 
-    plot.addCurve(curve);
+    plot.add(curve);
 
     curve.setXAndY(grid, cation);
 
     curve.setColor("00ffff");
 
-    plot.addCurve(curve);
+    plot.add(curve);
 
     plot.getXAxis().at(0).setTitle(xtitle);
 
@@ -1114,7 +1114,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     plots.push_back(plot);
 
-    canvas.addPlots(plots);
+    canvas.add(plots);
 
     ostr.str("");
 
@@ -1132,7 +1132,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     text.setCoordinates(0.25, 0.8, 0.0);
 
-    canvas.addText(text);
+    canvas.add(text);
 
     break;
   case Parameters::Arg::CoAdd:
@@ -1154,7 +1154,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     curve.setXAndY(grid, sum);
 
-    plot.addCurve(curve);
+    plot.add(curve);
 
     plot.setYLimits(MinMax::min_max(sum, MinMax::Nice));
 
@@ -1182,7 +1182,7 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
 
     plots.push_back(plot);
 
-    canvas.addPlots(plots);
+    canvas.add(plots);
 
     break;
   };

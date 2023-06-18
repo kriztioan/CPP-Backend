@@ -1,15 +1,18 @@
 #ifndef _POINT_H_
 #define _POINT_H_
 
+#include "CanvasItem.h"
+
 #include <string>
 #include <string_view>
 
 #include <array>
 
-class Point {
+class Point : public CanvasItem {
 
 public:
   Point();
+  Point *clone() const;
 
   void setCoordinates(const std::array<double, 3> &coordinates);
 

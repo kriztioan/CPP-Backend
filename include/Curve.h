@@ -1,13 +1,14 @@
 #ifndef _CURVE_H_
 #define _CURVE_H_
 
+#include "CanvasItem.h"
 #include "LineProperties.h"
 
 #include <string>
 #include <string_view>
 #include <vector>
 
-class Curve : public LineProperties {
+class Curve : public CanvasItem, public LineProperties {
 
 public:
   typedef std::vector<double>::iterator iterator;
@@ -15,6 +16,7 @@ public:
   typedef const std::vector<double>::const_iterator const_iterator;
 
   Curve();
+  Curve *clone() const;
 
   void setXAndY(const std::vector<double> &x, const std::vector<double> &y);
 
