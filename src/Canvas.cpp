@@ -8,7 +8,7 @@ Canvas::Canvas()
 
 void Canvas::add(CanvasItem &item) {
 
-  _items.push_back(std::unique_ptr<CanvasItem>(item.clone()));
+  _items.emplace_back(item.clone());
 }
 
 void Canvas::add(std::vector<Plot> &plots) {
