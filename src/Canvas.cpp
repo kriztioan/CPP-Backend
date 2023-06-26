@@ -15,7 +15,7 @@ void Canvas::add(std::vector<Plot> &plots) {
 
   for (auto &plot : plots) {
 
-    _items.emplace_back(std::unique_ptr<CanvasItem>(plot.clone()));
+    _items.emplace_back(plot.clone());
   }
 }
 

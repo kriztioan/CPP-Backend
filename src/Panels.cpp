@@ -14,20 +14,20 @@ Panels::Panels(Panels const &other) {
   _rows = other._rows;
 
   for (auto &item : other._items) {
-    _items.emplace_back(std::unique_ptr<CanvasItem>(item->clone()));
+    _items.emplace_back(item->clone());
   }
 }
 Panels *Panels::clone() const { return new Panels(*this); }
 
 void Panels::add(CanvasItem &item) {
 
-  _items.emplace_back(std::unique_ptr<CanvasItem>(item.clone()));
+  _items.emplace_back(item.clone());
 }
 
 void Panels::add(std::vector<Plot> &plots) {
 
   for (auto &plot : plots) {
 
-    _items.emplace_back(std::unique_ptr<CanvasItem>(plot.clone()));
+    _items.emplace_back(plot.clone());
   }
 }

@@ -40,19 +40,19 @@ Plot::Plot(Plot const &other) {
 
   for (auto &item : other._items) {
 
-    _items.emplace_back(std::unique_ptr<CanvasItem>(item->clone()));
+    _items.emplace_back(item->clone());
   }
 }
 Plot *Plot::clone() const { return new Plot(*this); }
 void Plot::add(CanvasItem &item) {
 
-  _items.emplace_back(std::unique_ptr<CanvasItem>(item.clone()));
+  _items.emplace_back(item.clone());
 }
 
 void Plot::add(std::vector<CanvasItem> &items) {
 
   for (auto &item : items) {
 
-    _items.emplace_back(std::unique_ptr<CanvasItem>(item.clone()));
+    _items.emplace_back(item.clone());
   }
 }
