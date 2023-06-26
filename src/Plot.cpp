@@ -44,10 +44,7 @@ Plot::Plot(Plot const &other) {
   }
 }
 Plot *Plot::clone() const { return new Plot(*this); }
-void Plot::add(CanvasItem &item) {
-
-  _items.emplace_back(item.clone());
-}
+void Plot::add(CanvasItem &item) { _items.emplace_back(item.clone()); }
 
 void Plot::add(std::vector<CanvasItem> &items) {
 

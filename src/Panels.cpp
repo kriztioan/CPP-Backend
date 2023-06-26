@@ -19,10 +19,7 @@ Panels::Panels(Panels const &other) {
 }
 Panels *Panels::clone() const { return new Panels(*this); }
 
-void Panels::add(CanvasItem &item) {
-
-  _items.emplace_back(item.clone());
-}
+void Panels::add(CanvasItem &item) { _items.emplace_back(item.clone()); }
 
 void Panels::add(std::vector<Plot> &plots) {
 

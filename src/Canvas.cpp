@@ -6,10 +6,7 @@ Canvas::Canvas()
   _items.reserve(4);
 }
 
-void Canvas::add(CanvasItem &item) {
-
-  _items.emplace_back(item.clone());
-}
+void Canvas::add(CanvasItem &item) { _items.emplace_back(item.clone()); }
 
 void Canvas::add(std::vector<Plot> &plots) {
 
