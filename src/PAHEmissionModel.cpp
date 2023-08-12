@@ -198,7 +198,7 @@ void PAHEmissionModel::applyBlackbodyWithTemperatureForEach(
 
     for (auto &t : transition) {
 
-      t.second *= Blackbody(t.first, temperatures[i]);
+      t.second *= 4.0 * M_PI * Blackbody(t.first, temperatures[i]);
     }
     ++i;
   }
