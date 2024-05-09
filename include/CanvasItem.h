@@ -12,7 +12,7 @@ public:
     I_Text,
     I_Panels
   };
-  virtual ~CanvasItem(){};
+  virtual ~CanvasItem() = default;
   virtual CanvasItem *clone() const { return new CanvasItem(*this); };
   Type type;
 };

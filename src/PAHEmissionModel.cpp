@@ -184,7 +184,8 @@ void PAHEmissionModel::applyBlackbodyWithTemperature(double temperature) {
 
     for (auto &t : transition) {
 
-      t.second *= 1e5 * 4.0 * M_PI * Blackbody(t.first, temperature) / AvogadrosNumber;
+      t.second *=
+          1e5 * 4.0 * M_PI * Blackbody(t.first, temperature) / AvogadrosNumber;
     }
   }
 }
@@ -198,7 +199,8 @@ void PAHEmissionModel::applyBlackbodyWithTemperatureForEach(
 
     for (auto &t : transition) {
 
-      t.second *= 1e5 * 4.0 * M_PI * Blackbody(t.first, temperatures[i]) / AvogadrosNumber;
+      t.second *= 1e5 * 4.0 * M_PI * Blackbody(t.first, temperatures[i]) /
+                  AvogadrosNumber;
     }
     ++i;
   }
