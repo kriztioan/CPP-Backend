@@ -118,6 +118,8 @@ private:
 
   static constexpr double BoltzmannConstant = 1.3806504e-16;
 
+  static constexpr double AvogadrosNumber = 6.0221415e+23;
+
   std::vector<int> _charges;
 
   std::vector<int> _carbons;

@@ -423,10 +423,10 @@ int main(const int argc, const char *argv[], char ** /* envp */) {
   } else if (parameters.getModel() == Parameters::Arg::FixedTemperature ||
              parameters.getModel() == Parameters::Arg::Temperature) {
 
-    ytitle = "#fispectral radiance [#fnx#fi10#u5#d erg/s/cm#u-1#d/mol]";
+    ytitle = "#fispectral radiance [erg/s/cm#u-1#d/PAH]";
   } else if (parameters.getModel() == Parameters::Arg::Cascade) {
 
-    ytitle = "#firadiant energy [#fnx#fi10#u5#d erg/cm#u-1#d/mol]";
+    ytitle = "#firadiant energy [erg/cm#u-1#d/PAH]";
   }
 
   std::vector<Plot> plots;

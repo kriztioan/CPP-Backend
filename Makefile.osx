@@ -1,4 +1,4 @@
-CC        =  g++-13
+CC        =  g++-14
 CCFLAGS   = -I./include -I/usr/local/include -I../local/include/ -I/Applications/MAMP/Library/include
 CCLIB     = -L../local/lib -lmysqlpp -L/Applications/MAMP/Library/lib -lmysqlclient -L/usr/local/lib -lplplotcxx -lgsl -lcfitsio -ltinyxml2 -lCCfits
 CCOPT     = -std=c++17 -Wall -fpermissive -O3 -flto#-g -DDEBUG -Wextra -O0 -fsanitize=address,float-divide-by-zero,bounds,alignment,object-size,float-cast-overflow,shift,integer-divide-by-zero,unreachable,vla-bound,null,return,signed-integer-overflow
