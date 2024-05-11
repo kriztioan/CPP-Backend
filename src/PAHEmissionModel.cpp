@@ -241,6 +241,8 @@ void PAHEmissionModel::applyCascadeWithEnergy(
 
   double strength;
 
+  double factor;
+
   gsl_integration_workspace *w = gsl_integration_workspace_alloc(MaxSteps);
 
   gsl_function F;
@@ -262,10 +264,17 @@ void PAHEmissionModel::applyCascadeWithEnergy(
 
     if (!_approximate) {
 
+      factor = 1.0;
+
       F.params = &transitions;
     } else {
 
       _nc = static_cast<double>(_carbons.at(j));
+
+      factor = 2.48534271218563e-23 * _nc /
+               std::accumulate(
+                   transitions.begin(), transitions.end(), 0.0,
+                   [](const auto &a, const auto &b) { return a + b.second; });
 
       F.params = &_charges.at(j++);
     }
@@ -287,7 +296,7 @@ void PAHEmissionModel::applyCascadeWithEnergy(
                           IntegrationAccuracy, MaxSteps, GSL_INTEG_GAUSS61, w,
                           &strength, &error);
 
-      t.second *= pow(t.first, 3) * strength;
+      t.second *= factor * pow(t.first, 3) * strength;
     }
   }
 
