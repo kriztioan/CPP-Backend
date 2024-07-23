@@ -7,7 +7,7 @@
 #include <mysql++/mysql++.h>
 #include <mysql++/ssqls.h>
 
-sql_create_16(sql_properties, 1, 0, mysqlpp::sql_int_unsigned, uid,
+sql_create_18(sql_properties, 1, 0, mysqlpp::sql_int_unsigned, uid,
               mysqlpp::sql_int_unsigned, n_h, mysqlpp::sql_int_unsigned, n_c,
               mysqlpp::sql_int_unsigned, n_n, mysqlpp::sql_int_unsigned, n_o,
               mysqlpp::sql_int_unsigned, n_mg, mysqlpp::sql_int_unsigned, n_si,
@@ -15,8 +15,9 @@ sql_create_16(sql_properties, 1, 0, mysqlpp::sql_int_unsigned, uid,
               mysqlpp::sql_int_unsigned, n_solo, mysqlpp::sql_int_unsigned,
               n_duo, mysqlpp::sql_int_unsigned, n_trio,
               mysqlpp::sql_int_unsigned, n_quartet, mysqlpp::sql_int_unsigned,
-              n_quintet, mysqlpp::sql_int_unsigned, n_ch2,
-              mysqlpp::sql_int_unsigned, n_chx);
+              n_quintet, mysqlpp::sql_int_unsigned, n_ch,
+              mysqlpp::sql_int_unsigned, n_ch2, mysqlpp::sql_int_unsigned,
+              n_ch3, mysqlpp::sql_int_unsigned, n_chx);
 
 #include <unistd.h>
 
